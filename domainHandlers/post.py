@@ -23,7 +23,7 @@ class PostHandler:
         return post
 
         #we use dao to return the list so we build a json dictionary and jsonify it back  to the main
-    def getAllPosts():
+    # def getAllPosts(self):
 
 
     
