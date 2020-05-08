@@ -41,9 +41,6 @@ FLASK_ENV=development
 FLASK_DEBUG=1
 ```
 
-
-Note: these environment variables are stored only for the current session, i.e. if you close the current session you need to create them again.
-
 To run the application simply run:
 ```bash
 (venv) ..$ flask run
