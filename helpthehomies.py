@@ -29,6 +29,14 @@ def provider():
 def requester():
     return render_template("requester.html")
 
+
+@app.route('/users', methods=['GET'])
+def users():
+    if request.method == 'GET':
+        return UserHandler().getAllUsers()
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
 #
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():

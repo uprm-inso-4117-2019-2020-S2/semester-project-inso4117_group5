@@ -1,5 +1,5 @@
 from flask import jsonify
-from domainDAO import userDAO
+from domainDAO.userDAO import UserDAO
 import re
 import json
 
@@ -8,6 +8,7 @@ import json
 #The first methods implemented are meant to test the db-interacion that would ocurr through the helpthehomies main
 #and our domain. We will reicive a request for information and we will supply it by asking the Data access object (DAO)
 #for the information wanted, creating a dictionarry and assing it off as json file bak to the main.
+
 
 class UserHandler:
     def createUserDict(self,row):
@@ -23,9 +24,9 @@ class UserHandler:
         #phone format
         user['uphone'] = row[4]
         #limited to 21
-        user['ulocation'] = row[5]
-        #float value
-        user['urating'] = row[6]
+        # user['ulocation'] = row[5]
+        # #float value
+        # user['urating'] = row[6]
 
         return user
 
@@ -73,4 +74,12 @@ class UserHandler:
     #we should make a query for the user id and username to validate
     # def verifyIfUserExists(self,uid):
 
-    # def getAllUsers():
+    def getAllUsers(self):
+        try:
+            users = UserDAO().get_all_users()
+            results = list()
+            for row in users:
+                results.append(self.createUserDict(row))
+            return jsonify(Users=results)
+        except:
+            return jsonify(message="Server error!"), 500
