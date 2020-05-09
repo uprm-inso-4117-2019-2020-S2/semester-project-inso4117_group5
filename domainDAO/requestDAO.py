@@ -27,13 +27,25 @@ class RequestDAO:
         return result
 
     def get_request_by_id(self, rid):
-        return
+        cursor = self.connection.cursor()
+        query = "select * from request where rid = %s;"
+        cursor.execute(query,(rid,))
+        result = cursor.fetchone()
+        return result
 
     def get_request_by_title(self, rtitle):
-        return
+        cursor = self.connection.cursor()
+        query = "select * from request where rtitle = %s;"
+        cursor.execute(query,(rtitle))
+        result = cursor.fetchone()
+        return result
 
     def get_request_by_location(self, rlocation):
-        return
+        cursor = self.connection.cursor()
+        query = "select * from request where rlocation = %s;"
+        cursor.execute(query, (rlocation,))
+        result = cursor.fetchone()
+        return result
 
     def get_requests_by_user_id(self, ruser):
         result = []
