@@ -39,8 +39,8 @@ class UserDAO:
         query = "Insert into Users(uusername, upassword, uemail, uphone) values " \
                 "(%s, %s, %s, %s) returning uid;"
         cursor.execute(query, (uusername, upassword, uemail, uphone))
-        uid = cursor.fetchone()[0]
-        self.connection.commit()
+        uid = cursor.fetchone()[0]  # Fetchone retorna un row, y nosotros queremos el elemento 0
+        self.connection.commit()  # Esta linea es SOLO cuando alteras algo en el DB (ej, insert, delete, update).
         cursor.close()
         return uid
 
@@ -55,5 +55,3 @@ class UserDAO:
 
     def update_user(self, uid):
         return
-
-
