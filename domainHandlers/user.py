@@ -94,3 +94,28 @@ class UserHandler:
                 return jsonify(ERROR="User Not Found"), 404
         except:
             return jsonify(ERROR="Handler Error"), 500
+
+    def insert_user(self, json_input):
+        if len(json_input) != 4:  # check if there are sufficient elements in input
+            return jsonify(Error="Malformed insert user request"), 400
+        try:  # check parameters are valid
+            uusername = json_input['uusername']
+            upassword = json_input['upassword']
+            uemail = json_input['uemail']
+            uphone = json_input['uphone']
+        except:
+            return jsonify(Error="Unexpected attributes in insert user request"), 400
+        try:
+            if uusername and upassword and uemail and uphone:
+                dao = UserDAO()
+                # if dao.get_user_by_email(uemail):  # checks if email exists in database. EMAILS MUST BE UNIQUE.
+                #     return jsonify(Error="User with that email already exists. Please try a different one."), 400
+                # elif dao.get_user_by_username(uusername):  # same but with username.
+                #     return jsonify(Error="User with that username already exists. Please try a different one."), 400
+                uid = dao.insert_user(uusername, upassword, uemail, uphone)
+            else:
+                return jsonify(Error="One or more attribute is empty"), 400
+        except:
+            return jsonify(Error="User insertion failed horribly."), 400
+        # Finally returns an user dict of the inserted user.
+        return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201

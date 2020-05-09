@@ -44,7 +44,7 @@ class UserDAO:
         cursor.close()
         return uid
 
-    def get_user_by_username(self, ):
+    def get_user_by_username(self, uusername):
         return
 
     def get_user_by_email(self, uemail):
