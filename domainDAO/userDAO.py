@@ -17,7 +17,7 @@ class UserDAO:
             print("Error while connecting to PostgreSQL database in heroku", error)
 
     def get_all_users(self):
-        result = []
+        result = list()
         cursor = self.connection.cursor()
         query = "Select * from Users"
         cursor.execute(query)
@@ -25,3 +25,35 @@ class UserDAO:
             result.append(row)
         cursor.close()
         return result
+
+    def get_user_by_id(self, uid):
+        cursor = self.connection.cursor()
+        query = "Select * from Users where uid = %s;"
+        cursor.execute(query, (uid,))
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
+    def insert_user(self, uusername, upassword, uemail, uphone):
+        cursor = self.connection.cursor()
+        query = "Insert into Users(uusername, upassword, uemail, uphone) values " \
+                "(%s, %s, %s, %s) returning uid;"
+        cursor.execute(query, (uusername, upassword, uemail, uphone))
+        uid = cursor.fetchone()[0]
+        self.connection.commit()
+        cursor.close()
+        return uid
+
+    def get_user_by_username(self, ):
+        return
+
+    def get_user_by_email(self, uemail):
+        return
+
+    def delete_user_by_id(self, uid):
+        return
+
+    def update_user(self, uid):
+        return
+
+
