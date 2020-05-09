@@ -32,10 +32,12 @@ def requester():
     return render_template("requester.html")
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/user', methods=['GET', 'POST'])
 def users():
     if request.method == 'GET':
         return UserHandler().get_all_users()
+    if request.method == 'POST':
+        return UserHandler().insert_user(request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
 
