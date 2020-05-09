@@ -3,35 +3,37 @@ from domainDAO.userDAO import UserDAO
 import re
 import json
 
-#AUTHOR: Guillermo
-#The User Handler will be called in the main and will be responsible for handling front-end and back-end interactions.
-#The first methods implemented are meant to test the db-interacion that would ocurr through the helpthehomies main
-#and our domain. We will reicive a request for information and we will supply it by asking the Data access object (DAO)
-#for the information wanted, creating a dictionarry and assing it off as json file bak to the main.
+
+# AUTHOR: Guillermo
+# The User Handler will be called in the main and will be responsible for handling front-end and back-end interactions.
+# The first methods implemented are meant to test the db-interaction that would occur through the helpthehomies main
+# and our domain. We will receive a request for information and we will supply it by asking the Data access object (DAO)
+# for the information wanted, creating a dictionary and passing it off as json file bak to the main.
 
 
 class UserHandler:
-    def createUserDict(self,row):
+    def createUserDict(self, row):
         user = {}
-        #cant be negative
+        # cant be negative
         user['uid'] = row[0]
-        #limited to 21 chars
+        # limited to 21 chars
         user['uuser'] = row[1]
-        #limited to 21 numbers and cap
+        # limited to 21 numbers and cap
         user['upassword'] = row[2]
-        #email format
+        # email format
         user['uemail'] = row[3]
-        #phone format
+        # phone format
         user['uphone'] = row[4]
-        #limited to 21
+        # limited to 21
         # user['ulocation'] = row[5]
         # #float value
         # user['urating'] = row[6]
 
         return user
 
-        #making sure a valid formated user was given, using order provided by the dictionary above
-    def validateUser(self,user):
+        # making sure a valid formated user was given, using order provided by the dictionary above
+
+    def validateUser(self, user):
         if user[0] < 0:
             return False
         elif len(user[1]) > 21:
@@ -49,8 +51,8 @@ class UserHandler:
         else:
             return True
 
-    def validateUserJSON(self,userJSON):
-        #turn json to dictionary
+    def validateUserJSON(self, userJSON):
+        # turn json to dictionary
         # user =
         if user['uid'] < 0:
             return False
@@ -60,7 +62,8 @@ class UserHandler:
             return False
         elif not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user['uemail']):
             return False
-        elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user['uphone']):
+        elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$',
+                          user['uphone']):
             return False
         elif len(user['ulocation']) > 21:
             return False
@@ -69,12 +72,10 @@ class UserHandler:
         else:
             return True
 
-
-
-    #we should make a query for the user id and username to validate
+    # we should make a query for the user id and username to validate
     # def verifyIfUserExists(self,uid):
 
-    def getAllUsers(self):
+    def get_all_users(self):
         try:
             users = UserDAO().get_all_users()
             results = list()
@@ -82,4 +83,14 @@ class UserHandler:
                 results.append(self.createUserDict(row))
             return jsonify(Users=results)
         except:
-            return jsonify(message="Server error!"), 500
+            return jsonify(ERROR="Server error!"), 500
+
+    def get_user_by_id(self, uid: int):
+        try:
+            user = UserDAO().get_user_by_id(uid)
+            if user:
+                return jsonify(User=self.createUserDict(user))
+            else:
+                return jsonify(ERROR="User Not Found"), 404
+        except:
+            return jsonify(ERROR="Handler Error"), 500
