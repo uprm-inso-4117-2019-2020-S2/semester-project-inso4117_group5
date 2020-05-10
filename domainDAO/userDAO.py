@@ -45,13 +45,25 @@ class UserDAO:
         return uid
 
     def get_user_by_username(self, uusername):
-        return
+        cursor = self.connection.cursor()
+        query = "select * from Users where uusername = %s"
+        cursor.execute(query, (uusername,))
+        result = cursor.fetchone()
+        return result
 
     def get_user_by_email(self, uemail):
-        return
+        cursor = self.connection.cursor()
+        query = "select * from Users where uemail = %s"
+        cursor.execute(query, (uemail,))
+        result = cursor.fetchone()
+        return result
 
     def delete_user_by_id(self, uid):
-        return
+        cursor = self.connection.cursor()
+        query = "delete from Users where uid = %s"
+        cursor.execute(query, (uid,))
+        self.connection.commit()
+        return uid
 
     def update_user(self, uid):
         return
