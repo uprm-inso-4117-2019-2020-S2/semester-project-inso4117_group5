@@ -4,6 +4,8 @@ from domainHandlers.user import UserHandler
 # Apply CORS to this app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
 #lol
 user = [1,'Morsa','faces44','morsa@gmail.com','7899','Quebra',.99]
@@ -29,6 +31,24 @@ def provider():
 def requester():
     return render_template("requester.html")
 
+
+@app.route('/user', methods=['GET', 'POST'])
+def users():
+    if request.method == 'GET':
+        return UserHandler().get_all_users()
+    if request.method == 'POST':
+        return UserHandler().insert_user(request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+
+@app.route('/user/<int:uid>', methods=['GET'])
+def user(uid: int):
+    if request.method == 'GET':
+        return UserHandler().get_user_by_id(uid)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
 #
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
@@ -50,5 +70,6 @@ def requester():
 #             flash('Login Unsuccessful. Please check username and password', 'danger')
 #     return render_template('login.html', title='Login', form=form)
 
+
 if __name__ == '__main__':
-     app.run(debug=True)
+    app.run(debug=True)
