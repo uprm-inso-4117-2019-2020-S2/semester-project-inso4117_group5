@@ -33,7 +33,7 @@ class TicketHandler:
             return False
         elif not isinstance(ticket[3], dict):
             return False
-        elif not isinstance(ticket[4], str):
+        elif len(ticket[4]) > 21:
             return False
         elif ticket[5] < 0 or ticket[5] > 3:
             return False
@@ -51,7 +51,7 @@ class TicketHandler:
             return False
         elif not isinstance(ticket['tsupplies'], dict):
             return False
-        elif not isinstance(ticket['tlocation'], str):
+        elif len(ticket['ulocation']) > 21:
             return False
         elif ticket['tstatus'] < 0 or ticket['tstatus'] > 3:
             return False
