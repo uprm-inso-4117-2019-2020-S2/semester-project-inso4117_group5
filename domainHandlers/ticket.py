@@ -5,7 +5,7 @@ import json
 
 #AUTHOR: Javier Ortiz
 
-class ticketHandler:
+class TicketHandler:
     def createTicketDict(self,row):
         ticket = {}
         #cant be negative
@@ -61,10 +61,10 @@ class ticketHandler:
 
 
     #we should make a query for the ticket id and ticketname to validate
-    # def verifyIfticketExists(self,uid):
+    # def verify_if_ticket_exists(self,uid):
     #TODO
-    # def getAlltickets():
+    # def get_all_tickets():
     #
-    # def get_user_by_id(self, uid: int):
+    # def get_ticket_by_id(self, uid: int):
     #
-    # def insert_user(self, json_input):
+    # def insert_ticket(self, json_input):
