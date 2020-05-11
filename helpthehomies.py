@@ -1,22 +1,12 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template
 from flask_cors import CORS, cross_origin
-from domainHandlers.user import UserHandler
+from domainHandler.user import UserHandler
 # Apply CORS to this app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
-#lol
-user = [1,'Morsa','faces44','morsa@gmail.com','7899','Quebra',.99]
-
-@app.route('/usertest')
-def userTest():
-    userdict= {}
-    if UserHandler().validateUser(user):
-        userdict = UserHandler().createUserDict(user)
-    return jsonify(User=userdict)
-
 
 
 @app.route('/')
