@@ -42,7 +42,7 @@ def user(uid: int):
 
 #TODO these need the DAO to work
 # @app.route('/ticket', methods=['GET', 'POST'])
-# def users():
+# def tickets():
 #     if request.method == 'GET':
 #         return TicketHandler().get_all_tickets()
 #     if request.method == 'POST':
@@ -52,7 +52,7 @@ def user(uid: int):
 #
 #
 # @app.route('/ticket/<int:uid>', methods=['GET'])
-# def user(uid: int):
+# def get_ticket(uid: int):
 #     if request.method == 'GET':
 #         return TicketHandler().get_ticket_by_id(uid)
 #     else:
