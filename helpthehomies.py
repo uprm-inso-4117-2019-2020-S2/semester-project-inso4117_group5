@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template
 from flask_cors import CORS, cross_origin
 from domainHandler.user import UserHandler
+from domainHandler.ticket import TicketHandler
 # Apply CORS to this app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -38,6 +39,24 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     else:
         return jsonify(Error="Method not allowed."), 405
+
+#TODO these need the DAO to work
+# @app.route('/ticket', methods=['GET', 'POST'])
+# def tickets():
+#     if request.method == 'GET':
+#         return TicketHandler().get_all_tickets()
+#     if request.method == 'POST':
+#         return TicketHandler().insert_ticket(request.json)
+#     else:
+#         return jsonify(Error="Method not allowed."), 405
+#
+#
+# @app.route('/ticket/<int:uid>', methods=['GET'])
+# def get_ticket(uid: int):
+#     if request.method == 'GET':
+#         return TicketHandler().get_ticket_by_id(uid)
+#     else:
+#         return jsonify(Error="Method not allowed."), 405
 
 #
 # @app.route("/register", methods=['GET', 'POST'])
