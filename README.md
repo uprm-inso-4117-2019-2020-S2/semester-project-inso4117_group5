@@ -36,7 +36,7 @@ We must first specify three environment variables to tell Flask to run the appli
 On the project folder, create a new file called `.flaskenv` In the file add the following lines.
 
 ```
-FLASK_APP=app.py
+FLASK_APP=helpthehomies.py
 FLASK_ENV=development
 FLASK_DEBUG=1
 ```
