@@ -119,3 +119,10 @@ class UserHandler:
             return jsonify(Error="User insertion failed horribly."), 400
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
+
+    #TODO
+    # def do_login(username, password):
+    #     pass
+    #
+    # def do_register(dict):
+    #     pass

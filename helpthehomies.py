@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template
+from flask import Flask, jsonify, request , redirect , url_for, render_template, session
 from flask_cors import CORS, cross_origin
+from passlib.hash import sha256_crypt
 from domainHandler.user import UserHandler
 from domainHandler.ticket import TicketHandler
 # Apply CORS to this app
@@ -58,16 +59,26 @@ def user(uid: int):
 #     else:
 #         return jsonify(Error="Method not allowed."), 405
 
-#
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('/'))
-#     return render_template('register.html', title='Register', form=form)
-#
-#
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return reder_template("register.html")
+    if request.method == 'POST':
+        username = request.json['username']
+        password = request.json['password']
+        password_hash = sha256_crypt.encrypt(password)
+        #TODO these are to be used in do_register
+        # email = request.json['email']
+        # phone = request.json['phone']
+
+        UserHandler().do_register(request.json)
+        if UserHandler().do_login(username, password):
+            flash(f'Account created for {username}!', 'success')
+            return redirect(url_for('/')) #this route will change
+        return render_template('register.html')
+
+
 # @app.route("/login", methods=['GET', 'POST'])
 # def login():
 #     form = LoginForm()
