@@ -69,12 +69,11 @@ class ProviderDAO:
         self.connection.commit()
         return pid
 
-    
     def update_provider_by_id(self, pid, puser, prequest):
         cursor = self.connection.cursor()
         query = "update Provider set puser = %s, prequest = %s"\
                 " where pid = %s;"
-        cursor.execute(query, (pid, puser, prequest))
+        cursor.execute(query, (puser, prequest, pid))
         self.connection.commit()
         cursor.close()
         return pid
