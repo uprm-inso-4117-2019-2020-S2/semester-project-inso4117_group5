@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
+
 # Apply CORS to this app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -30,6 +31,14 @@ def provider():
 @app.route('/requester')
 def requester():
     return render_template("requester.html")
+
+
+@app.route('/login', methods=['GET'])
+def login():
+    if request.method == 'GET':
+        return UserHandler().check_login(request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
 
 @app.route('/user', methods=['GET', 'POST'])

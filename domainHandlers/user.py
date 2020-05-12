@@ -1,5 +1,6 @@
 from flask import jsonify
 from domainDAO.userDAO import UserDAO
+from domainDAO.loginDAO import LoginDAO
 import re
 import json
 
@@ -117,5 +118,28 @@ class UserHandler:
                 return jsonify(Error="One or more attribute is empty"), 400
         except:
             return jsonify(Error="User insertion failed horribly."), 400
+        try:
+            LoginDAO().insert_login(uusername, upassword, uid)
+        except:
+            return jsonify(Error="Login insertion failed horribly."), 400
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
+
+    def check_login(self, json_input):
+        if len(json_input) != 2:  # check if there are sufficient elements in input
+            return jsonify(Error="Malformed insert user request"), 400
+        try:  # check parameters are valid
+            uusername = json_input['uusername']
+            upassword = json_input['upassword']
+        except:
+            return jsonify(Error="Unexpected attributes in login request"), 400
+        try:
+            if uusername and upassword:
+                uid = LoginDAO().get_login_by_username_and_password(uusername, upassword)
+            else:
+                return jsonify(Error="One or more attribute is empty"), 400
+        except:
+            return jsonify(Error="Login failed horribly."), 400
+        # Finally returns an user dict of the inserted user.
+        return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
+

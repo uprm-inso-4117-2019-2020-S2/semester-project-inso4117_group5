@@ -1,5 +1,5 @@
 from flask import jsonify
-from domainDAO import postDAO
+from domainDAO import loginDAO
 
 class PostHandler:
 
