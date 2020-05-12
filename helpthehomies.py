@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template
+from flask import Flask, jsonify, request , redirect , url_for, render_template, session
 from flask_cors import CORS, cross_origin
-from domainHandler.user import UserHandler
-from domainHandler.ticket import TicketHandler
+from domainHandlers.user import UserHandler
+from domainHandlers.user import RequestHandler
+
 # Apply CORS to this app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -9,14 +10,31 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
 
-
 @app.route('/')
 def home():
-    return render_template("selection.html")
+    return render_template("login.html")
 
-@app.route('/provider')
-def provider():
-    return render_template("provider.html")
+@app.route('/HTH/login', methods=['POST', 'GET'])
+def user_login():
+    if request.method == 'GET':
+        return render_template("login.html")
+
+    if request.method == 'POST':
+        username = request.json['username']
+        password = request.json['password']
+        if UserHandler().do_login(username, password):
+            return jsonify(logged_in=True, username=username)
+        else:
+
+            return jsonify(logged_in=False)
+
+
+@app.route('/helpsomehommies', methods=['POST', 'GET'])
+def Request_feed():
+    if request.method == 'GET':
+        allreqs = RequestHandler().get_all_requests()
+        return render_template("provider.html", Requests = allreqs)
+
 
 @app.route('/requester')
 def requester():

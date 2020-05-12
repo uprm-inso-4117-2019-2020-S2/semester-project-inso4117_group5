@@ -24,10 +24,10 @@ class UserHandler:
         user['uemail'] = row[3]
         # phone format
         user['uphone'] = row[4]
-        # limited to 21
-        user['ulocation'] = row[5]
-        # #float value
+        # float value
         user['urating'] = row[6]
+        #
+
 
         return user
 
