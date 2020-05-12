@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template, session
+from flask import Flask, jsonify, request , redirect , url_for, render_template
 from flask_cors import CORS, cross_origin
 from passlib.hash import sha256_crypt
 from domainHandler.user import UserHandler
@@ -63,12 +63,12 @@ def user(uid: int):
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return reder_template("register.html")
+        return render_template("register.html")
     if request.method == 'POST':
         username = request.json['username']
         password = request.json['password']
         password_hash = sha256_crypt.encrypt(password)
-        #TODO these are to be used in do_register
+        # these are to be used in do_register
         # email = request.json['email']
         # phone = request.json['phone']
 

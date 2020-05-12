@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, session
 from domainDAO.userDAO import UserDAO
 import re
 import json
@@ -120,7 +120,7 @@ class UserHandler:
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
 
-    #TODO
+    #TODO use session in these
     # def do_login(username, password):
     #     pass
     #
