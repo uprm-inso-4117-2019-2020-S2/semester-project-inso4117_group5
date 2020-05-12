@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
+# from domainDAO.userDAO import UserDAO
+# from domainDAO.loginDAO import LoginDAO
+# from domainDAO.providerDAO import ProviderDAO
+# from domainDAO.requestDAO import RequestDAO
+
 
 # Apply CORS to this app
 app = Flask(__name__)
@@ -58,7 +63,19 @@ def user(uid: int):
     else:
         return jsonify(Error="Method not allowed."), 405
 
-#
+
+# @app.route('/TEST', methods=['GET', 'POST', 'UPDATE', 'DELETE'])
+# def test():
+#     if request.method == 'GET':
+#         return
+    # elif request.method == 'POST':
+    #     return
+    # elif request.method == 'UPDATE':
+    #     return
+    # elif request.method == 'DELETE':
+    #     return
+
+
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
 #     form = RegistrationForm()

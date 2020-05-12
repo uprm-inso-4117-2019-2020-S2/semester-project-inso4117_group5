@@ -1,12 +1,13 @@
 import psycopg2
-from config.dbconfig import heroku_config
+from config.dbconfig import DATABASE_URL
 
 
 class ProviderDAO:
     def __init__(self):
         try:
-            self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
-                                               host=heroku_config['host'], database=heroku_config['dbname'])
+            self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+            # self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
+            #                                    host=heroku_config['host'], database=heroku_config['dbname'])
             cursor = self.connection.cursor()
 
             # Print PostgreSQL version
