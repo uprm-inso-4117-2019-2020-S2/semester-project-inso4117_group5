@@ -6,25 +6,27 @@ loginButton.addEventListener("click", (e) => {
     e.preventDefault();
     const username = loginForm.login.value;
     const password = loginForm.password.value;
+    const email = loginForm.email.value;
+    const phone = loginForm.phone.value;
 
     const reqObj = {
-      "username": username,
-      "password": password
+      "uusername": username,
+      "upassword": password,
+      "uemail": email,
+      "uphone": phone
     };
 
+    console.log(reqObj)
+
     $.ajax({
-      url: '/HTH/login',
+      url: '/register',
       type: 'POST',
       data: JSON.stringify(reqObj),
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
       success: function(data) {
-        if(data.logged_in){
-          alert("Succesful log in!")
-        }
-        else{
-          alert("Log in unsuccesful!")
-        }
+        alert("Form received");
+        //TODO add error codes just in case on the return for this request
       }
     });
 })

@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template, session
+from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
-from domainHandlers.user import RequestHandler
+# from domainHandlers.user import RequestHandler
 
 # Apply CORS to this app
 app = Flask(__name__)
@@ -28,6 +28,11 @@ def user_login():
 
             return jsonify(logged_in=False)
 
+@app.route('/HTH/logout', methods=['GET'])
+def user_logout():
+    if request.method == 'GET':
+        if UserHandler().do_logout():
+            return redirect(url_for('/'))
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
@@ -76,26 +81,19 @@ def user(uid: int):
 #     else:
 #         return jsonify(Error="Method not allowed."), 405
 
-#
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('/'))
-#     return render_template('register.html', title='Register', form=form)
-#
-#
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-#             flash('You have been logged in!', 'success')
-#             return redirect(url_for('home'))
-#         else:
-#             flash('Login Unsuccessful. Please check username and password', 'danger')
-#     return render_template('login.html', title='Login', form=form)
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
+        UserHandler().do_register(request.json)
+        if UserHandler().do_login(username, password):
+            flash(f'Account created for {username}!', 'success')
+            return redirect(url_for('/helpsomehommies'))
+        return render_template('register.html')
 
 
 if __name__ == '__main__':
