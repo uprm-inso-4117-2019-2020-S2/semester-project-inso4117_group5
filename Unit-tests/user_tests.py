@@ -1,3 +1,4 @@
+from flask import jsonify
 import unittest
 import json
 from domainHandlers.user import UserHandler
@@ -46,6 +47,16 @@ class UserHandlerTestCase(unittest.TestCase):
         #will get a list of users
         result = json.loads(self.uh.get_all_users())
         self.assertTrue(len(result['results']) > 1)
+
+    def test_get_user_by_id(self):
+        result = json.loads(self.uh.get_all_users())
+        first_user = result['results'][0]
+        user_result = json.loads(self.uh.get_user_by_id(first_user['uid']))['User']
+        self.assertEqual(user_result, first_user)
+        a_tuple = jsonify(ERROR="User Not Found"), 404
+        self.assertEqual(self.uh.get_user_by_id(-1), a_tuple)
+
+    def test_insert_user(self):
 
 
 if __name__ == "__main__":
