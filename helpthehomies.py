@@ -82,13 +82,6 @@ def register():
     if request.method == 'GET':
         return render_template("register.html")
     if request.method == 'POST':
-        username = request.json['username']
-        password = request.json['password']
-        password_hash = sha256_crypt.encrypt(password)
-        # these are to be used in do_register
-        # email = request.json['email']
-        # phone = request.json['phone']
-
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
             flash(f'Account created for {username}!', 'success')

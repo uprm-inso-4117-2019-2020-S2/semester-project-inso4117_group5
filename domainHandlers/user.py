@@ -125,5 +125,9 @@ class UserHandler:
     # def do_login(username, password):
     #     pass
     #
-    # def do_register(dict):
-    #     pass
+    @staticmethod
+    def do_register(req):
+        password = req['upassword']
+        password_hash = sha256_crypt.encrypt(password)
+        req['upassword'] = password_hash
+        return UserHandler().insert_user(req)
