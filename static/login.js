@@ -7,10 +7,24 @@ loginButton.addEventListener("click", (e) => {
     const username = loginForm.login.value;
     const password = loginForm.password.value;
 
-    if (username === "user" && password === "web_dev") {
-        alert("You have successfully logged in.");
-        location.reload();
-    } else {
-        loginErrorMsg.style.visibility = "visible";
-    }
+    const reqObj = {
+      "username": username,
+      "password": password
+    };
+
+    $.ajax({
+      url: '/HTH/login',
+      type: 'POST',
+      data: JSON.stringify(reqObj),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function(data) {
+        if(data.logged_in){
+          alert("Succesful log in!")
+        }
+        else{
+          alert("Log in unsuccesful!")
+        }
+      }
+    });
 })
