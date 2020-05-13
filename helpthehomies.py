@@ -9,9 +9,11 @@ app.secret_key = '5791628bb0b13ce0c676dfde280ba245'
 app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
 
+
 @app.route('/')
 def home():
     return render_template("login.html")
+
 
 @app.route('/HTH/login', methods=['POST', 'GET'])
 def user_login():
@@ -27,11 +29,13 @@ def user_login():
 
             return jsonify(logged_in=False)
 
+
 @app.route('/HTH/logout', methods=['GET'])
 def user_logout():
     if request.method == 'GET':
         if UserHandler().do_logout():
             return redirect(url_for('home'))
+
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
@@ -43,6 +47,14 @@ def Request_feed():
 @app.route('/requester')
 def requester():
     return render_template("requester.html")
+
+
+@app.route('/login', methods=['GET'])
+def login():
+    if request.method == 'GET':
+        return UserHandler().check_login(request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -61,6 +73,7 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     else:
         return jsonify(Error="Method not allowed."), 405
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
