@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
-from domainHandlers.user import RequestHandler
+# from domainHandlers.user import RequestHandler
 
 # Apply CORS to this app
 app = Flask(__name__)
@@ -94,18 +94,6 @@ def register():
             flash(f'Account created for {username}!', 'success')
             return redirect(url_for('/helpsomehommies'))
         return render_template('register.html')
-
-
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-#             flash('You have been logged in!', 'success')
-#             return redirect(url_for('home'))
-#         else:
-#             flash('Login Unsuccessful. Please check username and password', 'danger')
-#     return render_template('login.html', title='Login', form=form)
 
 
 if __name__ == '__main__':
