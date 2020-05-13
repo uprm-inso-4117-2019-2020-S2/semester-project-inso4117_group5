@@ -1,4 +1,4 @@
-from flask import jsonify, session
+from flask import jsonify, session, flash
 from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
 import re
@@ -121,10 +121,33 @@ class UserHandler:
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
 
-    #TODO use session in these
-    # def do_login(username, password):
-    #     pass
-    #
+    @staticmethod
+    def do_logout():
+        try:
+            session['logged_in'] = False
+            session.pop('uid', None)
+            return True
+        except Exception as err:
+            flash("Error on logout" + err.__str__())
+            return False
+
+    @staticmethod
+    def do_login(username, password):
+        try:
+            dao = UserDAO()
+            user = dao.get_user_by_username(username)
+            uid = user[0]#assuming that the uid is the first field in the row
+            db_pass = json.loads(UserHandler().get_user_by_id(uid))['upassword']
+
+            if user and sha256_crypt.verify(password, db_pass):
+                session['logged_in'] = True
+                session['uid'] = uid
+                return True
+            return False
+        except:
+            flash('Error on login')
+            return False
+
     @staticmethod
     def do_register(req):
         password = req['upassword']

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template, session
+from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
 from domainHandlers.user import RequestHandler
