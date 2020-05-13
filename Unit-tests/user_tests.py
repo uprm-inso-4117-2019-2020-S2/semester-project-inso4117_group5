@@ -20,10 +20,10 @@ class UserHandlerTestCase(unittest.TestCase):
         self.uh = UserHandler()
         self.dao = UserDAO()
         self.new_user = {
-        'uusername': str(int(random() ** 1000)),
-        'upassword': "password",
-        'uemail': "em@il.com"
-        'uphone': "1231231234"
+        "uusername": str(int(random() ** 1000)),
+        "upassword": "password",
+        "uemail": "em@il.com",
+        "uphone": str(1231231234)
         }
 
     def test_validUser(self):
