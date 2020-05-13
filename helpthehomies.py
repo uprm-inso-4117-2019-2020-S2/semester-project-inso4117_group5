@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
-# from domainHandlers.user import RequestHandler
+from domainHandlers.request import RequestHandler
 
 # Apply CORS to this app
 app = Flask(__name__)
