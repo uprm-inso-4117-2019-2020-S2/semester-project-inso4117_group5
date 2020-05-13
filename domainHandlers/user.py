@@ -25,10 +25,6 @@ class UserHandler:
         user['uemail'] = row[3]
         # phone format
         user['uphone'] = row[4]
-        # float value
-        user['urating'] = row[6]
-        #
-
 
         return user
 
@@ -44,10 +40,6 @@ class UserHandler:
         elif not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user[3]):
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user[4]):
-            return False
-        elif len(user[5]) > 21:
-            return False
-        elif user[6] > 1:
             return False
         else:
             return True
@@ -65,10 +57,6 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$',
                           user['uphone']):
-            return False
-        elif len(user['ulocation']) > 21:
-            return False
-        elif user['urating'] > 1:
             return False
         else:
             return True
