@@ -28,6 +28,21 @@ def user_login():
 
             return jsonify(logged_in=False)
 
+@app.route('/HTH/logout', methods=['GET'])
+def user_logout():
+    if request.method == 'GET':
+        if UserHandler().do_logout():
+            return redirect(url_for('/'))
+
+    if request.method == 'POST':
+        username = request.json['username']
+        password = request.json['password']
+        if UserHandler().do_login(username, password):
+            return jsonify(logged_in=True, username=username)
+        else:
+
+            return jsonify(logged_in=False)
+
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
