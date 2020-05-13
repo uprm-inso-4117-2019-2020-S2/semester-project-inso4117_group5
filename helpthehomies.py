@@ -82,10 +82,12 @@ def register():
     if request.method == 'GET':
         return render_template("register.html")
     if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
             flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('/')) #this route will change
+            return redirect(url_for('/helpsomehommies'))
         return render_template('register.html')
 
 
