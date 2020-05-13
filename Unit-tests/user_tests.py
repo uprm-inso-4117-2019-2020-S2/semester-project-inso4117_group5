@@ -1,7 +1,9 @@
-from flask import jsonify
+from flask import jsonify, session
 import unittest
 import json
+import random
 from domainHandlers.user import UserHandler
+from domainDAO.userDAO import UserDAO
 
 class UserHandlerTestCase(unittest.TestCase):
 #unit tests for validating user operations
@@ -16,6 +18,13 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def setUp(self):
         self.uh = UserHandler()
+        self.dao = UserDAO()
+        self.new_user = {
+        'uusername': str(int(random() ** 1000)),
+        'upassword': "password",
+        'uemail': "em@il.com"
+        'uphone': "1231231234"
+        }
 
     def test_validUser(self):
         self.assertTrue(self.uh.validateUser(self.user1))
@@ -57,6 +66,45 @@ class UserHandlerTestCase(unittest.TestCase):
         self.assertEqual(self.uh.get_user_by_id(-1), a_tuple)
 
     def test_insert_user(self):
+        result = self.uh.insert_user(self.new_user)
+        uid = json.loads(result)['User']['uid']
+        self.assertEqual(result[1], 201)
+        self.dao.delete_user_by_id(uid)#so test user is not persisted
+
+        self.new_user.pop('uusername')
+        result2 = self.uh.insert_user(self.new_user)
+        self.assertEqual(result2[1], 400)#user should never enter db
+
+    def test_do_logout(self):
+        self.assertTrue(self.uh.do_logout())
+        self.assertFalse(session['logged_in'])
+
+    def test_do_register(self):
+        #similar to the insert_user method
+        result = self.uh.do_register(self.new_user)
+        uid = json.loads(result)['User']['uid']
+        self.assertEqual(result[1], 201)
+        self.dao.delete_user_by_id(uid)#so test user is not persisted
+
+        self.new_user.pop('uusername')
+        result2 = self.uh.do_register(self.new_user)
+        self.assertEqual(result2[1], 400)#user should never enter db
+
+    def test_do_login(self):
+        #create new user
+        result = self.uh.do_register(self.new_user)
+        uid = json.loads(result)['User']['uid']
+
+        #test right password
+        self.assertTrue(self.uh.do_login(self.new_user['uusername'], self.new_user['upassword']))
+        self.assertTrue(session['logged_in'])
+
+        #test wrong password
+        self.uh.do_logout()
+        self.assertFalse(self.uh.do_login(self.new_user['uusername'],"notThePassword"))
+
+        #delete test user
+        self.dao.delete_user_by_id(uid)#so test user is not persisted
 
 
 if __name__ == "__main__":
