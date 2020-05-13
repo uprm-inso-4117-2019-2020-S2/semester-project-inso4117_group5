@@ -1,12 +1,11 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
-# from domainHandlers.user import RequestHandler
+from domainHandlers.request import RequestHandler
 
 # Apply CORS to this app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-app = Flask(__name__)
+app.secret_key = '5791628bb0b13ce0c676dfde280ba245'
 app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
 
@@ -32,7 +31,7 @@ def user_login():
 def user_logout():
     if request.method == 'GET':
         if UserHandler().do_logout():
-            return redirect(url_for('/'))
+            return redirect(url_for('home'))
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
@@ -63,25 +62,6 @@ def user(uid: int):
     else:
         return jsonify(Error="Method not allowed."), 405
 
-#TODO these need the DAO to work
-# @app.route('/ticket', methods=['GET', 'POST'])
-# def tickets():
-#     if request.method == 'GET':
-#         return TicketHandler().get_all_tickets()
-#     if request.method == 'POST':
-#         return TicketHandler().insert_ticket(request.json)
-#     else:
-#         return jsonify(Error="Method not allowed."), 405
-#
-#
-# @app.route('/ticket/<int:uid>', methods=['GET'])
-# def get_ticket(uid: int):
-#     if request.method == 'GET':
-#         return TicketHandler().get_ticket_by_id(uid)
-#     else:
-#         return jsonify(Error="Method not allowed."), 405
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -92,7 +72,7 @@ def register():
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
             flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('/helpsomehommies'))
+            return redirect(url_for('Request_feed'))
         return render_template('register.html')
 
 
