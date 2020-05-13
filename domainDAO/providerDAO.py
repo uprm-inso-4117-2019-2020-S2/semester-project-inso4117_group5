@@ -1,12 +1,13 @@
 import psycopg2
-from config.dbconfig import heroku_config
+from config.dbconfig import DATABASE_URL
 
 
 class ProviderDAO:
     def __init__(self):
         try:
-            self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
-                                               host=heroku_config['host'], database=heroku_config['dbname'])
+            self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+            # self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
+            #                                    host=heroku_config['host'], database=heroku_config['dbname'])
             cursor = self.connection.cursor()
 
             # Print PostgreSQL version
@@ -44,9 +45,35 @@ class ProviderDAO:
         cursor.close()
         return pid
 
-    def get_provider_by_user(self, puser):
+    def get_provider_by_user_id(self, puser):
         cursor = self.connection.cursor()
         query = "select * from Provider where puser = %s"
         cursor.execute(query, (puser,))
         result = cursor.fetchone()
         return result
+
+    def get_provider_by_request_id(self, prequest):
+        result = []
+        cursor = self.connection.cursor()
+        query = "select * from Provider where prequest = %s;"
+        cursor.execute(query, (prequest,))
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return result
+
+    def delete_provider_by_id(self, pid):
+        cursor = self.connection.cursor()
+        query = "delete from Provider where pid = %s"
+        cursor.execute(query, (pid,))
+        self.connection.commit()
+        return pid
+
+    def update_provider_by_id(self, pid, puser, prequest):
+        cursor = self.connection.cursor()
+        query = "update Provider set puser = %s, prequest = %s"\
+                " where pid = %s;"
+        cursor.execute(query, (puser, prequest, pid))
+        self.connection.commit()
+        cursor.close()
+        return pid

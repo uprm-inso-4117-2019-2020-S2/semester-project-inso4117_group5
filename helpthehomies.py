@@ -45,6 +45,14 @@ def requester():
     return render_template("requester.html")
 
 
+@app.route('/login', methods=['GET'])
+def login():
+    if request.method == 'GET':
+        return UserHandler().check_login(request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+
 @app.route('/user', methods=['GET', 'POST'])
 def users():
     if request.method == 'GET':

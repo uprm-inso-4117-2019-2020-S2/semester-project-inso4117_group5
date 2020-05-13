@@ -1,12 +1,13 @@
 import psycopg2
-from config.dbconfig import heroku_config
+from config.dbconfig import DATABASE_URL
 
 
 class RequestDAO:
     def __init__(self):
         try:
-            self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
-                                               host=heroku_config['host'], database=heroku_config['dbname'])
+            self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+            # self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
+            #                                    host=heroku_config['host'], database=heroku_config['dbname'])
             cursor = self.connection.cursor()
 
             # Print PostgreSQL version
@@ -36,7 +37,7 @@ class RequestDAO:
     def get_request_by_title(self, rtitle):
         cursor = self.connection.cursor()
         query = "select * from request where rtitle = %s;"
-        cursor.execute(query,(rtitle))
+        cursor.execute(query, (rtitle,))
         result = cursor.fetchone()
         return result
 
@@ -50,18 +51,28 @@ class RequestDAO:
     def get_requests_by_user_id(self, ruser):
         result = []
         cursor = self.connection.cursor()
-        query = "select rid, rtitle, rdescription, rlocation from request where ruser = %s;"
+        query = "select * from request where ruser = %s;"
         cursor.execute(query, (ruser,))
         for row in cursor:
             result.append(row)
         cursor.close()
         return result
 
-    def insert_request(self, rtitle, rdescription, rlocation, ruser):
+    def get_request_by_status(self, rstatus):
+        result = []
         cursor = self.connection.cursor()
-        query = "insert into request(rtitle, rdescription, rlocation, ruser)"\
-                " values(%s, %s, %s, %s) returning rid;"
-        cursor.execute(query, (rtitle, rdescription, rlocation, ruser))
+        query = "select * from request where rstatus = %s;"
+        cursor.execute(query, (rstatus,))
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return result
+
+    def insert_request(self, rtitle, rdescription, rlocation, rstatus, ruser):
+        cursor = self.connection.cursor()
+        query = "insert into request(rtitle, rdescription, rlocation, rstatus, ruser)"\
+                " values(%s, %s, %s, %s, %s) returning rid;"
+        cursor.execute(query, (rtitle, rdescription, rlocation, rstatus, ruser))
         rid = cursor.fetchone()[0]
         self.connection.commit()
         cursor.close()
@@ -72,4 +83,13 @@ class RequestDAO:
         query = "delete from request where rid = %s;"
         cursor.execute(query, (rid,))
         self.connection.commit()
+        return rid
+
+    def update_request_by_id(self, rid, rtitle, rdescription, rlocation, rstatus, ruser):
+        cursor = self.connection.cursor()
+        query = "update request set rtitle = %s, rdescription = %s, rlocation = %s, rstatus = %s, ruser = %s"\
+                " where rid = %s;"
+        cursor.execute(query, (rid, rtitle, rdescription, rlocation, rstatus, ruser))
+        self.connection.commit()
+        cursor.close()
         return rid
