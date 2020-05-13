@@ -1,4 +1,5 @@
 from flask import jsonify, session
+from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
 import re
 import json
