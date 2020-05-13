@@ -1,0 +1,41 @@
+{
+
+    "request_details":[
+        {
+            "rid":324,
+            "rtitle": 388,
+            "rdescription": 243,
+            "rlocation": "Mayaguez",
+            "ruser": "Miguelito",
+            "rstatus": "Pending",
+            "rresouces": "Water"
+        },
+        {
+            "rid":480,
+            "rtitle": 587,
+            "rdescription": 315,
+            "rlocation": "Cayey",
+            "ruser": "Juan",
+            "rstatus": "Confirmed",
+            "rresouces": "CannedFood"
+        },
+        {
+            "rid":148,
+            "rtitle": 298,
+            "rdescription": 506,
+            "rlocation": "Caguas",
+            "ruser": "Cesar",
+            "rstatus": "Pending",
+            "rresouces": "Tools"
+        },
+        {
+            "rid":152,
+            "rtitle": 186,
+            "rdescription": 376,
+            "rlocation": "Ponce",
+            "ruser": "David",
+            "rstatus": "Confirmed",
+            "rresouces": "Medicine"
+        }
+    ]
+}

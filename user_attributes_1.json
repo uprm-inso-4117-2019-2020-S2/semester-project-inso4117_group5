@@ -1,0 +1,72 @@
+{
+    "user_details":[
+        {
+            "uid":388,
+            "uuser": "John Johnson",
+            "upassword":"sierra117",
+            "uemail": "jj@gmail.com",
+            "uphone":"(809) 512-0116",
+            "urating": 0.7
+        },
+        {
+            "uid":587 ,
+            "uuser": "Manu Rodri",
+            "upassword":"ciic4060",
+            "uemail": "manu.rodri@gmail.com",
+            "uphone":"(462) 663-2549",
+            "urating": 1.0
+        },
+        {
+            "uid": 298 ,
+            "uuser": "Hideo Kojima",
+            "upassword":"foxhound1991",
+            "uemail": "manu@gmail.com",
+            "uphone":"(776) 857-8152",
+            "urating": 0.7 
+        },
+        {
+            "uid": 186 ,
+            "uuser": "Ed Boon",
+            "upassword":"scorpion1992",
+            "uemail": "nrstudio@gmail.com",
+            "uphone":"(887) 747-1876",
+            "urating": 0.6 
+        },
+        {
+            "uid": 376 ,
+            "uuser": "Jeff Kapplan",
+            "upassword":"overwatch2016",
+            "uemail": "blizzard@gmail.com",
+            "uphone":"(681) 556-3379",
+            "urating": 0.4 
+        },
+        {
+            "uid": 506 ,
+            "uuser": "Todd Howard",
+            "upassword":"fallout76good",
+            "uemail": "bethesda@gmail.com",
+            "uphone":"(336) 905-9800",
+            "urating": 0.1
+        },
+        {
+            "uid": 315 ,
+            "uuser": "Joseph Staten",
+            "upassword":"halo2004",
+            "uemail": "bungie@gmail.com",
+            "uphone":"(901) 395-3904",
+            "urating": 0.9
+        },
+        {
+            "uid": 243 ,
+            "uuser": "Gabe Newel",
+            "upassword":"tf22007",
+            "uemail": "valve@gmail.com",
+            "uphone":"(351) 260-6875",
+            "urating": 0.9
+        }
+    ]
+
+    
+
+
+}
