@@ -37,7 +37,7 @@ class RequestDAO:
     def get_request_by_title(self, rtitle):
         cursor = self.connection.cursor()
         query = "select * from request where rtitle = %s;"
-        cursor.execute(query,(rtitle))
+        cursor.execute(query, (rtitle,))
         result = cursor.fetchone()
         return result
 
@@ -70,7 +70,7 @@ class RequestDAO:
 
     def insert_request(self, rtitle, rdescription, rlocation, rstatus, ruser):
         cursor = self.connection.cursor()
-        query = "insert into request(rtitle, rdescription, rlocation, ruser, rstatus)"\
+        query = "insert into request(rtitle, rdescription, rlocation, rstatus, ruser)"\
                 " values(%s, %s, %s, %s, %s) returning rid;"
         cursor.execute(query, (rtitle, rdescription, rlocation, rstatus, ruser))
         rid = cursor.fetchone()[0]
