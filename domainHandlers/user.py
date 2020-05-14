@@ -45,7 +45,7 @@ class UserHandler:
         else:
             return True
 
-    def validateUserJSON(self, userJSON):
+    def validateUserJSON(self, user):
         # turn json to dictionary
         # user =
         if user['uid'] < 0:
