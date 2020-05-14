@@ -19,7 +19,7 @@ class UserHandler:
         # cant be negative
         user['uid'] = row[0]
         # limited to 21 chars
-        user['uuser'] = row[1]
+        user['uusername'] = row[1]
         # limited to 21 numbers and cap
         user['upassword'] = row[2]
         # email format
