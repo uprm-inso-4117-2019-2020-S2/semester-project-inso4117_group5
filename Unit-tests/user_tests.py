@@ -2,12 +2,14 @@ from flask import jsonify, session
 import unittest
 import json
 import random
+import sys
+sys.path.append("..")#to work with these imports
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
 
 class UserHandlerTestCase(unittest.TestCase):
 #unit tests for validating user operations
-    def __init__(self):
+    def setUp(self):
         self.user1 = [1,'Morsa','faces4444','morsa@gmail.com','7878598899','Carolina',.99]
         self.user2 = [2,'Javier','L','morsagmail.com','787888999','Uganda',.23]
         self.user3 = [3,'Morsa','TryHard22','morsaworker@gmail.com','939-787-7799','Ivory Coast',.75]
@@ -16,11 +18,10 @@ class UserHandlerTestCase(unittest.TestCase):
         self.user6 = [6,'','lol','morsa@gmail.com','7844445599','Quebra',.99]
         self.user7 = [7,'Juan','lol','morsa@gmail.com','7844445599','22',.99]
 
-    def setUp(self):
         self.uh = UserHandler()
         self.dao = UserDAO()
         self.new_user = {
-        "uusername": str(int(random() ** 1000)),
+        "uusername": str(random.randint(1000, 10000)),
         "upassword": "password",
         "uemail": "em@il.com",
         "uphone": str(1231231234)
