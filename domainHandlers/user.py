@@ -19,17 +19,13 @@ class UserHandler:
         # cant be negative
         user['uid'] = row[0]
         # limited to 21 chars
-        user['uuser'] = row[1]
+        user['uusername'] = row[1]
         # limited to 21 numbers and cap
         user['upassword'] = row[2]
         # email format
         user['uemail'] = row[3]
         # phone format
         user['uphone'] = row[4]
-        # float value
-        # user['urating'] = row[6]
-        #
-
 
         return user
 
@@ -46,14 +42,10 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user[4]):
             return False
-        elif len(user[5]) > 21:
-            return False
-        elif user[6] > 1:
-            return False
         else:
             return True
 
-    def validateUserJSON(self, userJSON):
+    def validateUserJSON(self, user):
         # turn json to dictionary
         # user =
         if user['uid'] < 0:
@@ -66,10 +58,6 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$',
                           user['uphone']):
-            return False
-        elif len(user['ulocation']) > 21:
-            return False
-        elif user['urating'] > 1:
             return False
         else:
             return True
