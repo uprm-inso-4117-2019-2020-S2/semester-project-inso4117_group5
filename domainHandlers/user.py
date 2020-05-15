@@ -1,6 +1,7 @@
 from flask import jsonify, session, flash
 from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
+from domainDAO.loginDAO import LoginDAO
 import re
 import json
 
@@ -18,17 +19,13 @@ class UserHandler:
         # cant be negative
         user['uid'] = row[0]
         # limited to 21 chars
-        user['uuser'] = row[1]
+        user['uusername'] = row[1]
         # limited to 21 numbers and cap
         user['upassword'] = row[2]
         # email format
         user['uemail'] = row[3]
         # phone format
         user['uphone'] = row[4]
-        # float value
-        user['urating'] = row[6]
-        #
-
 
         return user
 
@@ -45,14 +42,10 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user[4]):
             return False
-        elif len(user[5]) > 21:
-            return False
-        elif user[6] > 1:
-            return False
         else:
             return True
 
-    def validateUserJSON(self, userJSON):
+    def validateUserJSON(self, user):
         # turn json to dictionary
         # user =
         if user['uid'] < 0:
@@ -65,10 +58,6 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$',
                           user['uphone']):
-            return False
-        elif len(user['ulocation']) > 21:
-            return False
-        elif user['urating'] > 1:
             return False
         else:
             return True
@@ -118,8 +107,31 @@ class UserHandler:
                 return jsonify(Error="One or more attribute is empty"), 400
         except:
             return jsonify(Error="User insertion failed horribly."), 400
+        try:
+            LoginDAO().insert_login(uusername, upassword, uid)
+        except:
+            return jsonify(Error="Login insertion failed horribly."), 400
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
+
+    def check_login(self, json_input):
+        if len(json_input) != 2:  # check if there are sufficient elements in input
+            return jsonify(Error="Malformed insert user request"), 400
+        try:  # check parameters are valid
+            uusername = json_input['uusername']
+            upassword = json_input['upassword']
+        except:
+            return jsonify(Error="Unexpected attributes in login request"), 400
+        try:
+            if uusername and upassword:
+                uid = LoginDAO().get_login_by_username_and_password(uusername, upassword)
+            else:
+                return jsonify(Error="One or more attribute is empty"), 400
+        except:
+            return jsonify(Error="Login failed horribly."), 400
+        # Finally returns an user dict of the inserted user.
+        return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
+
 
     @staticmethod
     def do_logout():
