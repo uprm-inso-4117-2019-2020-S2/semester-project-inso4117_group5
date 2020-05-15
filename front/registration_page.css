@@ -1,0 +1,41 @@
+.banner{
+
+    height: 10%;
+
+    background: #9065E7;
+    mix-blend-mode: normal;
+    opacity: 0.6;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+
+}
+
+.logo{
+    
+    left: 0%;
+    right: 62.16%;
+    top: 0%;
+    bottom: 0%;
+}
+
+.background{
+    position: absolute;
+    width: 1440px;
+    height: 913px;
+    left: 0px;
+    top: 111px;
+    background: linear-gradient(180deg, #E6FBFC 0%, #B9FAFE 49.6%, #C8F5F8 100%);
+}
+
+.form{
+    position: absolute;
+    width: 600px;
+    height: 760px;
+    left: 780px;
+    top: 230px;
+
+    background: linear-gradient(180deg, #AFA0EF 0%, #FFBD58 100%);
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    border-radius: 25px;
+}
