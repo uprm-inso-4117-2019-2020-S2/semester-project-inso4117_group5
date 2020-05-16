@@ -44,10 +44,11 @@ def Request_feed():
         return render_template("provider.html", Requests = allreqs)
 
 
-@app.route('/requester')
-def requester():
-    return render_template("requester.html")
-
+@app.route('/requests', methods=['GET'])
+def getreqs():
+    if request.method == 'GET':
+        allreqs = RequestHandler().get_all_requests()
+        return(allreqs)
 
 @app.route('/login', methods=['GET'])
 def login():
