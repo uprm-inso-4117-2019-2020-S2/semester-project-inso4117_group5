@@ -34,7 +34,7 @@ def register():
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
             flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('Request_feed'))
+            return redirect(url_for('profile'))
         return render_template('register.html')
 
 
