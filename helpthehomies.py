@@ -23,9 +23,24 @@ def profile():
             inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
             fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
 
-            return render_template("profile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req )
+            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
     else:
         return redirect(url_for('user_login'))
+
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
+        UserHandler().do_register(request.json)
+        if UserHandler().do_login(username, password):
+            flash(f'Account created for {username}!', 'success')
+            return redirect(url_for('Request_feed'))
+        return render_template('register.html')
 
 
 
@@ -87,21 +102,6 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     else:
         return jsonify(Error="Method not allowed."), 405
-
-
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    if request.method == 'GET':
-        return render_template("register.html")
-    if request.method == 'POST':
-        username = request.json['uusername']
-        password = request.json['upassword']
-        UserHandler().do_register(request.json)
-        if UserHandler().do_login(username, password):
-            flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('Request_feed'))
-        return render_template('register.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
