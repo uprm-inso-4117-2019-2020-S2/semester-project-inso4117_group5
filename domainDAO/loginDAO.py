@@ -61,12 +61,3 @@ class LoginDAO:
         result = cursor.fetchone()[0]
         cursor.close()
         return result
-
-    def delete_login_by_uid(self, uid):
-        cursor = self.connection.cursor()
-        query = "delete from login where uid = %s"
-        cursor.execute(query, (uid,))
-        self.connection.commit()
-        result = cursor.fetchone()[0]
-        cursor.close()
-        return result

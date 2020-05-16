@@ -9,11 +9,9 @@ from config import app
 
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
-from domainDAO.loginDAO import LoginDAO
 
-def delete_user(user, login, uid):
-    login.delete_login_by_uid(uid)
-    user.delete_user_by_id(uid)
+def delete_user(dao, uid):
+    dao.delete_user_by_id(uid)
 
 
 class UserHandlerTestCase(unittest.TestCase):
@@ -29,7 +27,6 @@ class UserHandlerTestCase(unittest.TestCase):
 
         self.uh = UserHandler()
         self.dao = UserDAO()
-        self.login_dao = LoginDAO()
         self.new_user = {
         "uusername": str(random.randint(1000, 10000)),
         "upassword": "password",
@@ -79,7 +76,7 @@ class UserHandlerTestCase(unittest.TestCase):
         result = self.uh.insert_user(self.new_user)
         uid = json.loads(result[0].get_data())['User']['uid']
         self.assertEqual(result[1], 201)
-        delete_user(self.dao, self.login_dao, uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
         self.new_user.pop('uusername')
         result2 = self.uh.insert_user(self.new_user)
@@ -94,7 +91,7 @@ class UserHandlerTestCase(unittest.TestCase):
         result = self.uh.do_register(self.new_user)
         uid = json.loads(result[0].get_data())['User']['uid']
         self.assertEqual(result[1], 201)
-        delete_user(self.dao, self.login_dao, uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
         self.new_user.pop('uusername')
         result2 = self.uh.do_register(self.new_user)
@@ -116,7 +113,7 @@ class UserHandlerTestCase(unittest.TestCase):
         self.assertFalse(self.uh.do_login(self.new_user['uusername'],"notThePassword"))
 
         #delete test user
-        delete_user(self.dao, self.login_dao, uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
 
 if __name__ == "__main__":
