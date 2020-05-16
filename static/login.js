@@ -8,8 +8,8 @@ loginButton.addEventListener("click", (e) => {
     const password = loginForm.password.value;
 
     const reqObj = {
-      "username": username,
-      "password": password
+      "uusername": username,
+      "upassword": password
     };
 
     $.ajax({
