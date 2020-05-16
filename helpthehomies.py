@@ -7,7 +7,36 @@ from config import app
 
 @app.route('/')
 def home():
-    return render_template("login.html")
+    return render_template("home.html")
+
+@app.route('/HTH/profile', methods=['GET'])
+def profile():
+    if session['logged_in']:
+        if request.method == 'GET':
+            user_info = UserHandler().get_user_by_id(session['uid'])
+            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
+            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
+            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
+
+            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+    else:
+        return redirect(url_for('user_login'))
+
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
+        UserHandler().do_register(request.json)
+        if UserHandler().do_login(username, password):
+            flash(f'Account created for {username}!', 'success')
+            return redirect(url_for('Request_feed'))
+        return render_template('register.html')
+
 
 
 @app.route('/HTH/login', methods=['POST', 'GET'])
@@ -19,7 +48,7 @@ def user_login():
         username = request.json['username']
         password = request.json['password']
         if UserHandler().do_login(username, password):
-            return jsonify(logged_in=True, username=username)
+            return redirect(url_for('Request_feed'))
         else:
 
             return jsonify(logged_in=False)
@@ -34,22 +63,22 @@ def user_logout():
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
+    if session['logged_in']:
+        if request.method == 'GET':
+            allreqs = RequestHandler().get_all_requests()
+            return render_template("provider.html", Requests = allreqs)
+        if request.method == 'POST':
+            req = RequestHandler().insert(request.json)
+    else:
+        return redirect(url_for('user_login'))
+
+
+@app.route('/requests', methods=['GET'])
+def getreqs():
     if request.method == 'GET':
         allreqs = RequestHandler().get_all_requests()
-        return render_template("provider.html", Requests = allreqs)
+        return(allreqs)
 
-
-@app.route('/requester')
-def requester():
-    return render_template("requester.html")
-
-
-@app.route('/login', methods=['GET'])
-def login():
-    if request.method == 'GET':
-        return UserHandler().check_login(request.json)
-    else:
-        return jsonify(Error="Method not allowed."), 405
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -68,21 +97,6 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     else:
         return jsonify(Error="Method not allowed."), 405
-
-
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    if request.method == 'GET':
-        return render_template("register.html")
-    if request.method == 'POST':
-        username = request.json['uusername']
-        password = request.json['upassword']
-        UserHandler().do_register(request.json)
-        if UserHandler().do_login(username, password):
-            flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('Request_feed'))
-        return render_template('register.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
