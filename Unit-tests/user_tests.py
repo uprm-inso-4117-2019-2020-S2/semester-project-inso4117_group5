@@ -102,12 +102,13 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_do_login(self):
         #create new user
+        curr_pass = self.new_user['upassword']
         result = self.uh.do_register(self.new_user)[0]
         print(result.get_data())
         uid = json.loads(result.get_data())['User']['uid']
 
         #test right password
-        self.assertTrue(self.uh.do_login(self.new_user['uusername'], self.new_user['upassword']))
+        self.assertTrue(self.uh.do_login(self.new_user['uusername'], curr_pass))
         self.assertTrue(session['logged_in'])
 
         #test wrong password

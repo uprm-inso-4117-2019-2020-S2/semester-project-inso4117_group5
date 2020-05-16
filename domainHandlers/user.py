@@ -149,8 +149,8 @@ class UserHandler:
             dao = UserDAO()
             user = dao.get_user_by_username(username)
             uid = user[0]#assuming that the uid is the first field in the row
-            db_pass = json.loads(UserHandler().get_user_by_id(uid))['upassword']
-            
+            db_pass = json.loads(UserHandler().get_user_by_id(uid).get_data())['User']['upassword']
+            print("verify result: ----- " + str(sha256_crypt.verify(password, db_pass)))
             if user and sha256_crypt.verify(password, db_pass):
                 session['logged_in'] = True
                 session['uid'] = uid
