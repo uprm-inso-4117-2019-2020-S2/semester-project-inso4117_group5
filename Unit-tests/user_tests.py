@@ -1,4 +1,4 @@
-from flask import jsonify, session
+from flask import jsonify, session, flash
 import unittest
 import json
 import random
@@ -71,7 +71,7 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_insert_user(self):
         result = self.uh.insert_user(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        uid = json.loads(result.get_data())['User']['uid']
         self.assertEqual(result[1], 201)
         self.dao.delete_user_by_id(uid)#so test user is not persisted
 
@@ -86,7 +86,7 @@ class UserHandlerTestCase(unittest.TestCase):
     def test_do_register(self):
         #similar to the insert_user method
         result = self.uh.do_register(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        uid = json.loads(result.get_data())['User']['uid']
         self.assertEqual(result[1], 201)
         self.dao.delete_user_by_id(uid)#so test user is not persisted
 
@@ -96,8 +96,9 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_do_login(self):
         #create new user
-        result = self.uh.do_register(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        result = self.uh.do_register(self.new_user)[0]
+        print(result.get_data())
+        uid = json.loads(result.get_data())['User']['uid']
 
         #test right password
         self.assertTrue(self.uh.do_login(self.new_user['uusername'], self.new_user['upassword']))
