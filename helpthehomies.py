@@ -12,7 +12,21 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return render_template("login.html")
+    return render_template("home.html")
+
+@app.route('/HTH/profile', methods=['GET'])
+def profile():
+    if session['logged_in']:
+        if request.method == 'GET':
+            user_info = UserHandler().get_user_by_id(session['uid'])
+            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
+            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
+            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
+
+            return render_template("profile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req )
+    else:
+        return redirect(url_for('user_login'))
+
 
 
 @app.route('/HTH/login', methods=['POST', 'GET'])
@@ -24,7 +38,7 @@ def user_login():
         username = request.json['username']
         password = request.json['password']
         if UserHandler().do_login(username, password):
-            return jsonify(logged_in=True, username=username)
+            return redirect(url_for('Request_feed'))
         else:
 
             return jsonify(logged_in=False)
@@ -39,9 +53,14 @@ def user_logout():
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
-    if request.method == 'GET':
-        allreqs = RequestHandler().get_all_requests()
-        return render_template("provider.html", Requests = allreqs)
+    if session['logged_in']:
+        if request.method == 'GET':
+            allreqs = RequestHandler().get_all_requests()
+            return render_template("provider.html", Requests = allreqs)
+        if request.method == 'POST':
+            req = RequestHandler().insert(request.json)
+    else:
+        return redirect(url_for('user_login'))
 
 
 @app.route('/requests', methods=['GET'])
@@ -50,12 +69,6 @@ def getreqs():
         allreqs = RequestHandler().get_all_requests()
         return(allreqs)
 
-@app.route('/login', methods=['GET'])
-def login():
-    if request.method == 'GET':
-        return UserHandler().check_login(request.json)
-    else:
-        return jsonify(Error="Method not allowed."), 405
 
 
 @app.route('/user', methods=['GET', 'POST'])

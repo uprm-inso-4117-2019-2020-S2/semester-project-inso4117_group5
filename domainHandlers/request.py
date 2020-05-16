@@ -1,5 +1,5 @@
 from flask import jsonify
-from domainDAO import requestDAO
+from domainDAO.requestDAO import RequestDAO
 import re
 import json
 
@@ -65,7 +65,7 @@ class RequestHandler:
 
     def get_all_requests(self):
         try:
-            requests = requestDAO().get_all_requests()
+            requests = RequestDAO().get_all_requests()
             results = list()
             for row in requests:
                 results.append(self.createRequestDict(row))
@@ -77,7 +77,7 @@ class RequestHandler:
 
     def get_request_by_id(self, id: int):
         try:
-            requests = requestDAO.get_all_requests()
+            requests = RequestDAO.get_all_requests()
             results = list()
             for row in users:
                 results.append(self.createRequestDict(row))
@@ -87,7 +87,7 @@ class RequestHandler:
 
     def get_request_by_location(self, location):
         try:
-            requests = requestDAO.get_request_by_location(location)
+            requests = RequestDAO.get_request_by_location(location)
             results = list()
             for row in users:
                 results.append(self.createRequestDict(row))
@@ -97,7 +97,7 @@ class RequestHandler:
 
     def get_request_by_status(self,status):
         try:
-            requests = requestDAO.get_request_by_status(status)
+            requests = RequestDAO.get_request_by_status(status)
             results = list()
             for row in users:
                 results.append(self.createRequestDict(row))
@@ -119,7 +119,7 @@ class RequestHandler:
                 return jsonify(Error="Unexpected attributes in insert user request"), 400
             try:
                 if rid and rtitle and rdescription and rlocation and ruser and rstatus:
-                    dao = requestDAO().insert(rtitle,rdescription,rlocation,ruser)
+                    dao = RequestDAO().insert(rtitle,rdescription,rlocation,ruser)
 
                 else:
                     return jsonify(Error="One or more attribute is empty"), 400

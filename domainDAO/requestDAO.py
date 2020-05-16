@@ -58,6 +58,16 @@ class RequestDAO:
         cursor.close()
         return result
 
+    def get_requests_by_user_status(self, ruser,status):
+        result = []
+        cursor = self.connection.cursor()
+        query = "select * from request where ruser = %s and rstatus= %s;"
+        cursor.execute(query, (ruser,rstatus,))
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return result
+
     def get_request_by_status(self, rstatus):
         result = []
         cursor = self.connection.cursor()
@@ -71,7 +81,7 @@ class RequestDAO:
     def insert_request(self, rtitle, rdescription, rlocation, ruser):
         cursor = self.connection.cursor()
         query = "insert into request(rtitle, rdescription, rlocation, rstatus, ruser)"\
-                " values(%s, %s, %s,'unfulfilled', %s) returning rid;"
+                " values(%s, %s, %s, 0 , %s) returning rid;"
         cursor.execute(query, (rtitle, rdescription, rlocation, rstatus, ruser))
         rid = cursor.fetchone()[0]
         self.connection.commit()
