@@ -3,17 +3,18 @@ from domainDAO import requestDAO
 import re
 import json
 
-#AUTHOR: Javier Ortiz
+# AUTHOR: Javier Ortiz, Ramon "El Duro" Rosado
 
 
 class RequestHandler:
-    def create_request_dict(self, row):
+    @staticmethod
+    def create_request_dict(row):
         return {'rid': row[0], 'rtitle': row[1], 'rdescription': row[2],
-                'rlocation': row[3], 'ruser': row[4], 'rstatus': row[5]
+                'rlocation': row[3], 'rstatus': row[4], 'ruser': row[5]
                 }
 
     # making sure a valid formated request was given, using order provided by the dictionary above
-    def validateRequest(self,request):
+    def validateRequest(self, request):
         if request[0] < 0:
             return False
         elif request[1] < 0:
@@ -47,9 +48,7 @@ class RequestHandler:
         else:
             return True
 
-
-
-    #we should make a query for the request id and requestname to validate
+    # we should make a query for the request id and requestname to validate
     # def verify_if_request_exists(self,uid):
     #TODO
     # def get_all_requests():
