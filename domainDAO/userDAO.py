@@ -14,7 +14,6 @@ class UserDAO:
             cursor.execute("SELECT version();")
             record = cursor.fetchone()
             print("You are connected to - ", record, "\n")
-            psycopg2.connect('')
         except (Exception, psycopg2.Error) as error:
             print("Error while connecting to PostgreSQL database in heroku", error)
 
@@ -73,4 +72,3 @@ class UserDAO:
         cursor.execute(query, (uusername, upassword, uemail, uphone))
         self.connection.commit()
         cursor.close()
-

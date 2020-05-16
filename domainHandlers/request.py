@@ -1,5 +1,5 @@
 from flask import jsonify
-from domainDAO import requestDAO
+from domainDAO.requestDAO import RequestDAO
 import re
 import json
 
@@ -7,6 +7,7 @@ import json
 
 
 class RequestHandler:
+    @staticmethod
     def create_request_dict(self, row):
         return {'rid': row[0], 'rtitle': row[1], 'rdescription': row[2],
                 'rlocation': row[3], 'ruser': row[4], 'rstatus': row[5]
@@ -47,14 +48,67 @@ class RequestHandler:
         else:
             return True
 
-
-
-    #we should make a query for the request id and requestname to validate
+    # we should make a query for the request id and requestname to validate
     # def verify_if_request_exists(self,uid):
-    #TODO
-    # def get_all_requests():
-    
-    # def get_request_by_id(self, uid: int):
-    # get request by location
-    # get request by status: pending, fuffilied y unfufilled
-    # def insert_request(self, json_input):
+
+    def get_all_requests(self):
+        try:
+            requests = RequestDAO().get_all_requests()
+            results = list()
+            for row in requests:
+                results.append(self.create_request_dict(row))
+                print(row)
+            return jsonify(requests=results)
+        except:
+            return jsonify(ERROR="Server error!"), 500
+
+    def get_request_by_id(self, id: int):
+        try:
+            requests = RequestDAO.get_all_requests()
+            results = list()
+            for row in requests:
+                results.append(self.create_request_dict(row))
+            return jsonify(requests=results)
+        except:
+            return jsonify(ERROR="Server error!"), 500
+
+    def get_request_by_location(self, location):
+        try:
+            requests = RequestDAO.get_request_by_location(location)
+            results = list()
+            for row in requests:
+                results.append(self.create_request_dict(row))
+            return jsonify(requests=results)
+        except:
+            return jsonify(ERROR="Server error!"), 500
+
+    def get_request_by_status(self, status):
+        try:
+            requests = RequestDAO.get_request_by_status(status)
+            results = list()
+            for row in requests:
+                results.append(self.create_request_dict(row))
+            return jsonify(requests=results)
+        except:
+            return jsonify(ERROR="Server error!"), 500
+
+    def insert(self, json_input):
+        if session['logged_in']:  # check if there are sufficient elements in input
+            try:  # check parameters are valid
+                rid = json_input['rid']
+                rtitle = json_input['rtitle']
+                rdescription = json_input['rdescription']
+                rlocation = json_input['rlocation']
+                ruser = json_input['ruser']
+                rstatus = json_input['rstatus']
+
+            except:
+                return jsonify(Error="Unexpected attributes in insert user request"), 400
+            try:
+                if rid and rtitle and rdescription and rlocation and ruser and rstatus:
+                    dao = RequestDAO().insert(rtitle,rdescription,rlocation,ruser)
+
+                else:
+                    return jsonify(Error="One or more attribute is empty"), 400
+            except:
+                return jsonify(Error="Failed to make the request."), 400
