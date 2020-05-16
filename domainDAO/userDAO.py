@@ -72,4 +72,3 @@ class UserDAO:
         cursor.execute(query, (uusername, upassword, uemail, uphone))
         self.connection.commit()
         cursor.close()
-
