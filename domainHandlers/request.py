@@ -5,27 +5,14 @@ import json
 
 #AUTHOR: Javier Ortiz
 
+
 class RequestHandler:
-    def createrequestDict(self,row):
-        request = {}
-        #cant be negative
-        request['rid'] = row[0]
-        #request requester (foreign key) (must be bigger than 0)
-        request['rtitle'] = row[1]
-        #request provider (same as above)
-        request['rdescription'] = row[2]
-        #supplies (Dictionary)
-        request['rlocation'] = row[3]
-        #string
-        request['ruser'] = row[4]
-        #int (enum)
-        request['rstatus'] = row[5]
-        #
-        request['rresources'] = row[6]
+    def create_request_dict(self, row):
+        return {'rid': row[0], 'rtitle': row[1], 'rdescription': row[2],
+                'rlocation': row[3], 'ruser': row[4], 'rstatus': row[5]
+                }
 
-        return request
-
-        #making sure a valid formated request was given, using order provided by the dictionary above
+    # making sure a valid formated request was given, using order provided by the dictionary above
     def validateRequest(self,request):
         if request[0] < 0:
             return False
