@@ -3,7 +3,7 @@ from domainDAO.requestDAO import RequestDAO
 import re
 import json
 
-#AUTHOR: Javier Ortiz
+# AUTHOR: Javier Ortiz and Ramón "El Duro" Rosado
 
 
 class RequestHandler:
