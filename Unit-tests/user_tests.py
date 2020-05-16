@@ -3,7 +3,10 @@ import unittest
 import json
 import random
 import sys
+
 sys.path.append("..")#to work with these imports
+from config import app
+
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
 
@@ -109,4 +112,5 @@ class UserHandlerTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    with app.test_request_context():
+        unittest.main()
