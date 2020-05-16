@@ -8,13 +8,13 @@ import json
 
 class RequestHandler:
     @staticmethod
-    def create_request_dict(self, row):
+    def create_request_dict(row):
         return {'rid': row[0], 'rtitle': row[1], 'rdescription': row[2],
-                'rlocation': row[3], 'ruser': row[4], 'rstatus': row[5]
+                'rlocation': row[3], 'rstatus': row[4], 'ruser': row[5]
                 }
 
-    # making sure a valid formated request was given, using order provided by the dictionary above
-    def validateRequest(self,request):
+    # making sure a valid formatted request was given, using order provided by the dictionary above
+    def validateRequest(self, request):
         if request[0] < 0:
             return False
         elif request[1] < 0:
