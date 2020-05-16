@@ -1,11 +1,18 @@
-from flask import jsonify, session
+from flask import jsonify, session, flash
 import unittest
 import json
 import random
 import sys
+
 sys.path.append("..")#to work with these imports
+from config import app
+
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
+
+def delete_user(dao, uid):
+    dao.delete_user_by_id(uid)
+
 
 class UserHandlerTestCase(unittest.TestCase):
 #unit tests for validating user operations
@@ -55,22 +62,21 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_get_all_users(self):
         #will get a list of users
-        result = json.loads(self.uh.get_all_users())
-        self.assertTrue(len(result['results']) > 1)
+        result = json.loads(self.uh.get_all_users().get_data())['Users']
+        self.assertTrue(len(result) > 1)
 
     def test_get_user_by_id(self):
-        result = json.loads(self.uh.get_all_users())
-        first_user = result['results'][0]
-        user_result = json.loads(self.uh.get_user_by_id(first_user['uid']))['User']
+        result = json.loads(self.uh.get_all_users().get_data())['Users']
+        first_user = result[0]
+        user_result = json.loads(self.uh.get_user_by_id(first_user['uid']).get_data())['User']
         self.assertEqual(user_result, first_user)
-        a_tuple = jsonify(ERROR="User Not Found"), 404
-        self.assertEqual(self.uh.get_user_by_id(-1), a_tuple)
+        self.assertEqual(self.uh.get_user_by_id(-1)[1], 404)
 
     def test_insert_user(self):
         result = self.uh.insert_user(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        uid = json.loads(result[0].get_data())['User']['uid']
         self.assertEqual(result[1], 201)
-        self.dao.delete_user_by_id(uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
         self.new_user.pop('uusername')
         result2 = self.uh.insert_user(self.new_user)
@@ -83,9 +89,9 @@ class UserHandlerTestCase(unittest.TestCase):
     def test_do_register(self):
         #similar to the insert_user method
         result = self.uh.do_register(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        uid = json.loads(result[0].get_data())['User']['uid']
         self.assertEqual(result[1], 201)
-        self.dao.delete_user_by_id(uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
         self.new_user.pop('uusername')
         result2 = self.uh.do_register(self.new_user)
@@ -93,11 +99,13 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_do_login(self):
         #create new user
-        result = self.uh.do_register(self.new_user)
-        uid = json.loads(result)['User']['uid']
+        curr_pass = self.new_user['upassword']
+        result = self.uh.do_register(self.new_user)[0]
+        print(result.get_data())
+        uid = json.loads(result.get_data())['User']['uid']
 
         #test right password
-        self.assertTrue(self.uh.do_login(self.new_user['uusername'], self.new_user['upassword']))
+        self.assertTrue(self.uh.do_login(self.new_user['uusername'], curr_pass))
         self.assertTrue(session['logged_in'])
 
         #test wrong password
@@ -105,8 +113,9 @@ class UserHandlerTestCase(unittest.TestCase):
         self.assertFalse(self.uh.do_login(self.new_user['uusername'],"notThePassword"))
 
         #delete test user
-        self.dao.delete_user_by_id(uid)#so test user is not persisted
+        delete_user(self.dao, uid)#so test user is not persisted
 
 
 if __name__ == "__main__":
-    unittest.main()
+    with app.test_request_context():
+        unittest.main()

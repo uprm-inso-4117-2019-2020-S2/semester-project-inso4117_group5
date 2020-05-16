@@ -61,4 +61,3 @@ class LoginDAO:
         result = cursor.fetchone()[0]
         cursor.close()
         return result
-
