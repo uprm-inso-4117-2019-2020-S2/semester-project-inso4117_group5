@@ -5,7 +5,7 @@ from domainHandlers.request import RequestHandler
 
 # Apply CORS to this app
 app = Flask(__name__)
-app.secret_key = '5791628bb0b13ce0c676dfde280ba245'
+app.secret_key = b'5791628bb0b13ce0c676dfde280ba245'
 app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
 CORS(app)
 
@@ -16,16 +16,20 @@ def home():
 
 @app.route('/HTH/profile', methods=['GET'])
 def profile():
-    if session['logged_in']:
-        if request.method == 'GET':
-            user_info = UserHandler().get_user_by_id(session['uid'])
-            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
-            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
-            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
+    try:
+        if session['logged_in']:
+            if request.method == 'GET':
+                user_info = UserHandler().get_user_by_id(session['uid'])
+                unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
+                inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
+                fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
 
-            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
-    else:
+                return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+        else:
+            return redirect(url_for('user_login'))
+    except:
         return redirect(url_for('user_login'))
+
 
 
 
@@ -50,8 +54,8 @@ def user_login():
         return render_template("login.html")
 
     if request.method == 'POST':
-        username = request.json['username']
-        password = request.json['password']
+        username = request.json['uusername']
+        password = request.json['upassword']
         if UserHandler().do_login(username, password):
             return redirect(url_for('Request_feed'))
         else:
@@ -68,14 +72,18 @@ def user_logout():
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
-    if session['logged_in']:
-        if request.method == 'GET':
-            allreqs = RequestHandler().get_all_requests()
-            return render_template("provider.html", Requests = allreqs)
-        if request.method == 'POST':
-            req = RequestHandler().insert(request.json)
-    else:
+    try:
+        if session['logged_in']:
+            if request.method == 'GET':
+                allreqs = RequestHandler().get_all_requests()
+                return render_template("provider.html", Requests = allreqs)
+            if request.method == 'POST':
+                req = RequestHandler().insert(request.json)
+        else:
+            return redirect(url_for('user_login'))
+    except:
         return redirect(url_for('user_login'))
+
 
 
 @app.route('/requests', methods=['GET'])
