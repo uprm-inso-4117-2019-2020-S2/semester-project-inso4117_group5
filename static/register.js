@@ -25,6 +25,7 @@ loginButton.addEventListener("click", (e) => {
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
       success: function(data) {
+        window.location.assign("127.0.0.1:5000/HTH/profile")
         alert("Form received");
         //TODO add error codes just in case on the return for this request
       }

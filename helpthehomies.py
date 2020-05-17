@@ -48,10 +48,11 @@ def user_login():
     if request.method == 'POST':
         username = request.json['uusername']
         password = request.json['upassword']
-        if UserHandler().do_login(username, password):
-            
-        else:
 
+        if UserHandler().do_login(username, password):
+            return jsonify(logged_in=True)
+
+        else:
             return jsonify(logged_in=False)
 
 
