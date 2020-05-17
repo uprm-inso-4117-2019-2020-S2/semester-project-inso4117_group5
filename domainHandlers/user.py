@@ -1,6 +1,6 @@
 import sys
 
-from flask import jsonify, session, flash, Flask
+from flask import jsonify, session, flash
 from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
 from domainDAO.loginDAO import LoginDAO
@@ -169,7 +169,8 @@ class UserHandler:
                     session['uid'] = uid
                 return True
             return False
-        except:
+        except Exception as e:
+            print(e)
             if not testing:
                 flash('Error on login')
             return False
@@ -195,6 +196,6 @@ class UserHandler:
                     return jsonify(DeletedUser=self.createUserDict(row)), 200
                 else:
                     return jsonify(Error="Delete failed"), 404
-        except:
-            e = sys.exc_info()[0]
+        except Exception as e:
+            print(e)
             return jsonify(ERROR=e), 500

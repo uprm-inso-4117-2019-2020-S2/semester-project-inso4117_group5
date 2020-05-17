@@ -3,36 +3,35 @@ import unittest
 import json
 import random
 import sys
-from passlib.hash import sha256_crypt
-
-sys.path.append("..")#to work with these imports
 from config import app
-
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
 
-def delete_user(dao, uid):
-    dao.delete_user_by_id(uid)
+sys.path.append("..")  # to work with these imports
+
+
+# def delete_user(dao, uid):
+#     dao.delete_user_by_id(uid)
 
 
 class UserHandlerTestCase(unittest.TestCase):
     # unit tests for validating user operations
     def setUp(self):
-        self.user1 = [1,'Morsa','faces4444','morsa@gmail.com','7878598899','Carolina',.99]
-        self.user2 = [2,'Javier','L','morsagmail.com','787888999','Uganda',.23]
-        self.user3 = [3,'Morsa','TryHard22','morsaworker@gmail.com','939-787-7799','Ivory Coast',.75]
-        self.user4 = [4,'Walrus','Paul','loquito99@gmail.com','787/123/4567','Maya',-.99]
-        self.user5 = [5,'Morsa','','morsa@gmail.com','7844445599','Quebra',.99]
-        self.user6 = [6,'','lol','morsa@gmail.com','7844445599','Quebra',.99]
-        self.user7 = [7,'Juan','lol','morsa@gmail.com','7844445599','22',.99]
+        self.user1 = [1, 'Morsa', 'faces4444', 'morsa@gmail.com', '7878598899', 'Carolina', .99]
+        self.user2 = [2, 'Javier', 'L', 'morsagmail.com', '787888999', 'Uganda', .23]
+        self.user3 = [3, 'Morsa', 'TryHard22', 'morsaworker@gmail.com', '939-787-7799', 'Ivory Coast', .75]
+        self.user4 = [4, 'Walrus', 'Paul', 'loquito99@gmail.com', '787/123/4567', 'Maya', -.99]
+        self.user5 = [5, 'Morsa', '', 'morsa@gmail.com', '7844445599', 'Quebra', .99]
+        self.user6 = [6, '', 'lol', 'morsa@gmail.com', '7844445599', 'Quebra', .99]
+        self.user7 = [7, 'Juan', 'lol', 'morsa@gmail.com', '7844445599', '22', .99]
 
         self.uh = UserHandler()
         self.dao = UserDAO()
         self.new_user = {
-        "uusername": str(random.randint(1000, 10000)),
-        "upassword": "password",
-        "uemail": "em@il.com",
-        "uphone": str(1231231234)
+            "uusername": str(random.randint(1000, 10000)),
+            "upassword": "password",
+            "uemail": "em@il.com",
+            "uphone": str(1231231234)
         }
         self.app = Flask(__name__)
 
@@ -118,7 +117,7 @@ class UserHandlerTestCase(unittest.TestCase):
 
             # test wrong password
             # self.uh.do_logout()
-            self.assertFalse(self.uh.do_login(self.new_user['uusername'], curr_pass+'LOL', testing=True))
+            self.assertFalse(self.uh.do_login(self.new_user['uusername'], curr_pass + 'LOL', testing=True))
 
             # delete test user
             self.dao.delete_user_by_id(uid)  # so test user is not persisted

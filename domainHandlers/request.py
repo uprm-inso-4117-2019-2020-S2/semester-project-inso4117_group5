@@ -33,7 +33,7 @@ class RequestHandler:
             return True
 
     def validateRequestJSON(self,requestJSON):
-        #turn json to dictionary
+        # turn json to dictionary
         request = json.loads(requestJSON)
         if request['uid'] < 0:
             return False
@@ -60,8 +60,8 @@ class RequestHandler:
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(Requests=results), 200
-        except:
-            e = sys.exc_info()[0]
+        except Exception as e:
+            print(e)
             return jsonify(ERROR=e), 500
 
     def get_request_by_uid(self, uid: int):
@@ -71,9 +71,9 @@ class RequestHandler:
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(Requests=results)
-        except:
-            e = sys.exc_info()[0]
-            return jsonify(ERROR=str(e)), 500
+        except Exception as e:
+            print(e)
+            return jsonify(ERROR=e), 500
 
     def get_request_by_location(self, location: str):
         try:
@@ -82,8 +82,8 @@ class RequestHandler:
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(Requests=results)
-        except:
-            e = sys.exc_info()[0]
+        except Exception as e:
+            print(e)
             return jsonify(ERROR=e), 500
 
     def get_request_by_status(self, status: str):
@@ -93,8 +93,8 @@ class RequestHandler:
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(Requests=results)
-        except:
-            e = sys.exc_info()[0]
+        except Exception as e:
+            print(e)
             return jsonify(ERROR=e), 500
 
     def insert(self, json_input):
