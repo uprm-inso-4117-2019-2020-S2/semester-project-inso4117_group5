@@ -59,7 +59,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(requests=results)
+            return jsonify(Requests=results)
         except:
             e = sys.exc_info()[0]
             return jsonify(ERROR=e), 500
@@ -70,10 +70,10 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(requests=results)
+            return jsonify(Requests=results)
         except:
             e = sys.exc_info()[0]
-            return jsonify(ERROR=e), 500
+            return jsonify(ERROR=str(e)), 500
 
     def get_request_by_location(self, location: str):
         try:
@@ -81,7 +81,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(requests=results)
+            return jsonify(Requests=results)
         except:
             e = sys.exc_info()[0]
             return jsonify(ERROR=e), 500
@@ -92,7 +92,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(requests=results)
+            return jsonify(Requests=results)
         except:
             e = sys.exc_info()[0]
             return jsonify(ERROR=e), 500

@@ -1,4 +1,4 @@
-from flask import jsonify, session
+from flask import jsonify, session, Flask
 import unittest
 import json
 import random
@@ -14,12 +14,13 @@ class UserHandlerTestCase(unittest.TestCase):
         self.r1 = [1, 'Toilet Paper', 'this is NOT a description', 'home', 'Requesting', 1]
         self.r2 = [2, 'Hand Sanitizer', 'this MAY be a decription', 'Maya', 'Provided', 3]
         self.r3 = [3, 'Food', 'this is POSSIBLY a description', 'laCalle', 'Provided', 1]
-        self.r4 = [4, 'send help pls', 'this is ME DOING a description', 'casa', 'Requesting', 3]
+        self.r4 = [4, 'send help pls', 'this is ME DOING a description', 'home', 'Requesting', 3]
         self.r5 = [5, 'beer', 'this is JUST a description', 'bar', 'Requesting', 4]
 
         self.keys = ['rid', 'rtitle', 'rdescription', 'rlocation', 'rstatus', 'ruser']
         self.rh = RequestHandler()
         self.dao = RequestDAO()
+        self.app = Flask(__name__)
 
     def test_create_request_dict(self):
         self.assertDictEqual(dict(zip(self.keys, self.r1)), self.rh.create_request_dict(self.r1))
@@ -27,6 +28,10 @@ class UserHandlerTestCase(unittest.TestCase):
         self.assertDictEqual(dict(zip(self.keys, self.r3)), self.rh.create_request_dict(self.r3))
         self.assertDictEqual(dict(zip(self.keys, self.r4)), self.rh.create_request_dict(self.r4))
         self.assertDictEqual(dict(zip(self.keys, self.r5)), self.rh.create_request_dict(self.r5))
+
+    def test_get_all_requests(self):
+        with self.app.app_context():
+            self.assertTrue(len(self.rh.get_all_requests().json["Requests"]) > 1)
 
     # def test_validUser(self):
     #     self.assertTrue(self.uh.validateUser(self.user1))
