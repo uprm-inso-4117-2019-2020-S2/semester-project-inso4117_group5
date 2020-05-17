@@ -3,12 +3,11 @@ import unittest
 import json
 import random
 import sys
+
+sys.path.append("..")  # to work with these imports
 from config import app
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
-
-sys.path.append("..")  # to work with these imports
-
 
 # def delete_user(dao, uid):
 #     dao.delete_user_by_id(uid)
