@@ -1,7 +1,10 @@
 import unittest
+import os
 import sys
 
-sys.path.append("..")  # to work with these imports
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+sys.path.append(basedir)  # to work with these imports
 from config import app
 
 #
@@ -31,7 +34,13 @@ class BasicTests(unittest.TestCase):
 ###############
 
     def test_main_page(self):
-        response = self.app.get('/', follow_redirects=True)
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_profile_page_no_login(self):
+        #not logged in
+        response = self.app.get('/HTH/profile')
+        print(response)
         self.assertEqual(response.status_code, 200)
 
 
