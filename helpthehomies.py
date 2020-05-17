@@ -12,7 +12,7 @@ def home():
     return render_template("home.html")
 
 
-@app.route('/HTH/profile', methods=['GET'])
+@app.route('/HTH/profile', methods=['GET','POST'])
 def profile():
     if session['logged_in']:
         if request.method == 'GET':
@@ -20,8 +20,8 @@ def profile():
             unf_req = RequestHandler().get_requests_by_user_status(session['uid'],'fuf')
             inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],'unfuf')
             fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],'pending')
-
             return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+        
     else:
         return redirect(url_for('user_login'))
 
@@ -35,7 +35,7 @@ def register():
         password = request.json['upassword']
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
-            flash(f'Account created for {username}!', 'success')
+            return jsonify(signedIn=True)
 
 
 
