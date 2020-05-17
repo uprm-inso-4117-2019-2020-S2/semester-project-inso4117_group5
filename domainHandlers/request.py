@@ -97,7 +97,7 @@ class RequestHandler:
             print(e)
             return jsonify(ERROR=e), 500
 
-    def get_requests_by_user_status(self, status: str, id: int):
+    def get_requests_by_user_status(self, id: int, status: str):
         try:
             requests = RequestDAO().get_requests_by_user_status(id,status)
             results = list()

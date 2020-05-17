@@ -17,9 +17,9 @@ def profile():
     if session['logged_in']:
         if request.method == 'GET':
             user_info = UserHandler().get_user_by_id(session['uid'])
-            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
-            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
-            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
+            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],'fuf')
+            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],'unfuf')
+            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],'pending')
 
             return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
     else:
@@ -36,8 +36,8 @@ def register():
         UserHandler().do_register(request.json)
         if UserHandler().do_login(username, password):
             flash(f'Account created for {username}!', 'success')
-            return redirect(url_for('profile'))
-        return render_template('register.html')
+
+
 
 
 @app.route('/HTH/login', methods=['POST', 'GET'])
@@ -49,7 +49,7 @@ def user_login():
         username = request.json['uusername']
         password = request.json['upassword']
         if UserHandler().do_login(username, password):
-            return redirect(url_for('Request_feed'))
+            
         else:
 
             return jsonify(logged_in=False)
