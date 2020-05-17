@@ -64,7 +64,7 @@ class RequestDAO:
     def get_requests_by_user_status(self, ruser: int, rstatus: str):
         result = []
         cursor = self.connection.cursor()
-        query = "select * from request where ruser = %s and rstatus= %s;"
+        query = "select * from request where ruser = %s and rstatus = %s;"
         cursor.execute(query, (ruser, rstatus,))
         for row in cursor:
             result.append(row)
