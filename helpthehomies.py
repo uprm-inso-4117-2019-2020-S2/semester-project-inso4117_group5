@@ -5,9 +5,11 @@ from domainHandlers.request import RequestHandler
 
 from config import app
 
+
 @app.route('/')
 def home():
     return render_template("home.html")
+
 
 @app.route('/HTH/profile', methods=['GET'])
 def profile():
@@ -26,8 +28,6 @@ def profile():
         return redirect(url_for('user_login'))
 
 
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -40,7 +40,6 @@ def register():
             flash(f'Account created for {username}!', 'success')
             return redirect(url_for('profile'))
         return render_template('register.html')
-
 
 
 @app.route('/HTH/login', methods=['POST', 'GET'])
