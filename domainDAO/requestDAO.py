@@ -91,13 +91,18 @@ class RequestDAO:
         cursor.close()
         return rid
 
-    def delete_request_by_id(self, rid):
+    def delete_request_by_id(self, rid: int) -> int:  # returns the number of rows deleted in whole DB
         cursor = self.connection.cursor()
-        query = "delete from request where rid = %s;"
+        count = 0
+        query = "DELETE FROM provider WHERE prequest IN (SELECT %s request);"
         cursor.execute(query, (rid,))
+        count += cursor.rowcount
+        query = "DELETE FROM request WHERE rid = %s RETURNING *;"
+        cursor.execute(query, (rid,))
+        count += cursor.rowcount
         self.connection.commit()
         cursor.close()
-        return rid
+        return count
 
     def update_request_by_id(self, rid, rtitle, rdescription, rlocation, rstatus, ruser):
         cursor = self.connection.cursor()

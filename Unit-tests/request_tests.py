@@ -33,6 +33,9 @@ class UserHandlerTestCase(unittest.TestCase):
         with self.app.app_context():
             self.assertTrue(len(self.rh.get_all_requests().json["Requests"]) > 1)
 
+    def test_get_request_by_uid(self):
+        pass
+
     # def test_validUser(self):
     #     self.assertTrue(self.uh.validateUser(self.user1))
     #     self.assertFalse(self.uh.validateUser(self.user2))
