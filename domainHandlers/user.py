@@ -1,6 +1,6 @@
 import sys
 
-from flask import jsonify, session, flash
+from flask import jsonify, session, flash, Flask
 from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
 from domainDAO.loginDAO import LoginDAO
@@ -116,7 +116,7 @@ class UserHandler:
         # Finally returns an user dict of the inserted user.
         return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
 
-    def check_login(self, json_input):
+    def check_login(self, json_input, testing=False):
         if len(json_input) != 2:  # check if there are sufficient elements in input
             print("Not enough arguments! Needs 2, got", len(json_input))
             return False
@@ -137,14 +137,15 @@ class UserHandler:
                 # return jsonify(Error="One or more attribute is empty"), 400
         except Exception as e:
             print(e)
+            print("Login credentials are incorrect")
             return False
             # return jsonify(Error="Login failed horribly."), 400
-        session['logged_in'] = True
-        session['uid'] = uid
+        if not testing:
+            session['logged_in'] = True
+            session['uid'] = uid
         return True
         # Finally returns an user dict of the inserted user.
         # return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
-
 
     @staticmethod
     def do_logout():
@@ -156,28 +157,33 @@ class UserHandler:
             flash("Error on logout" + err.__str__())
             return False
 
-    # @staticmethod
-    # def do_login(username, password):
-    #     try:
-    #         dao = UserDAO()
-    #         user = dao.get_user_by_username(username)
-    #         uid = user[0]#assuming that the uid is the first field in the row
-    #         db_pass = json.loads(UserHandler().get_user_by_id(uid).get_data())['User']['upassword']
-    #         if user and sha256_crypt.verify(password, db_pass):
-    #             session['logged_in'] = True
-    #             session['uid'] = uid
-    #             return True
-    #         return False
-    #     except:
-    #         flash('Error on login')
-    #         return False
+    def do_login(self, username: str, password: str, testing: bool = False):
+        try:
+            dao = UserDAO()
+            user = dao.get_user_by_username(username)
+            uid = user[0]  # assuming that the uid is the first field in the row
+            db_pass = json.loads(self.get_user_by_id(uid).get_data())['User']['upassword']
+            if user and sha256_crypt.verify(password, db_pass):
+                if not testing:
+                    session['logged_in'] = True
+                    session['uid'] = uid
+                return True
+            return False
+        except:
+            if not testing:
+                flash('Error on login')
+            return False
 
-    @staticmethod
-    def do_register(req):
+    def do_register(self, req):
         password = req['upassword']
         password_hash = sha256_crypt.encrypt(password)
         req['upassword'] = password_hash
-        return UserHandler().insert_user(req)
+        return self.insert_user(req)
+
+    @staticmethod
+    def do_password_check(req):
+
+        pass
 
     def delete_user_by_id(self, uid: int):
         try:

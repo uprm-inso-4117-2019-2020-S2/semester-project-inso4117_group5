@@ -31,7 +31,9 @@ class UserHandlerTestCase(unittest.TestCase):
 
     def test_get_all_requests(self):
         with self.app.app_context():
-            self.assertTrue(len(self.rh.get_all_requests().json["Requests"]) > 1)
+            self.assertTrue(len(self.rh.get_all_requests()[0].json["Requests"]) > 1)
+            result = self.rh.get_all_requests()
+            print("lol")
 
     def test_get_request_by_uid(self):
         pass

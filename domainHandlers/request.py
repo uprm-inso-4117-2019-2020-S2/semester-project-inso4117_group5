@@ -59,7 +59,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(Requests=results)
+            return jsonify(Requests=results), 200
         except:
             e = sys.exc_info()[0]
             return jsonify(ERROR=e), 500

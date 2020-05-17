@@ -3,6 +3,7 @@ import unittest
 import json
 import random
 import sys
+from passlib.hash import sha256_crypt
 
 sys.path.append("..")#to work with these imports
 from config import app
@@ -15,7 +16,7 @@ def delete_user(dao, uid):
 
 
 class UserHandlerTestCase(unittest.TestCase):
-#unit tests for validating user operations
+    # unit tests for validating user operations
     def setUp(self):
         self.user1 = [1,'Morsa','faces4444','morsa@gmail.com','7878598899','Carolina',.99]
         self.user2 = [2,'Javier','L','morsagmail.com','787888999','Uganda',.23]
@@ -80,47 +81,47 @@ class UserHandlerTestCase(unittest.TestCase):
             result = self.uh.insert_user(self.new_user)
             uid = json.loads(result[0].get_data())['User']['uid']
             self.assertEqual(result[1], 201)
-            delete_user(self.dao, uid)#so test user is not persisted
+            self.dao.delete_user_by_id(uid)  # so test user is not persisted
 
             self.new_user.pop('uusername')
             result2 = self.uh.insert_user(self.new_user)
-            self.assertEqual(result2[1], 400)#user should never enter db
+            self.assertEqual(result2[1], 400)  # user should never enter db
 
-    def test_do_logout(self):
-        with self.app.app_context():
-            self.assertTrue(self.uh.do_logout())
-            self.assertFalse(session['logged_in'])
+    # def test_do_logout(self):
+    #     with self.app.app_context():
+    #         self.assertTrue(self.uh.do_logout())
+    #         self.assertFalse(session['logged_in'])
 
     def test_do_register(self):
         with self.app.app_context():
-            #similar to the insert_user method
+            # similar to the insert_user method
             result = self.uh.do_register(self.new_user)
             uid = json.loads(result[0].get_data())['User']['uid']
             self.assertEqual(result[1], 201)
-            delete_user(self.dao, uid)#so test user is not persisted
+            self.dao.delete_user_by_id(uid)  # so test user is not persisted
 
             self.new_user.pop('uusername')
             result2 = self.uh.do_register(self.new_user)
-            self.assertEqual(result2[1], 400)#user should never enter db
+            self.assertEqual(result2[1], 400)  # user should never enter db
 
     def test_do_login(self):
         with self.app.app_context():
-            #create new user
+            # create new user
             curr_pass = self.new_user['upassword']
-            result = self.uh.do_register(self.new_user)[0]
-            print(result.get_data())
-            uid = json.loads(result.get_data())['User']['uid']
+            result = self.uh.do_register(self.new_user)[0].json
+            print(result)
+            uid = result['User']['uid']
 
-            #test right password
-            self.assertTrue(self.uh.do_login(self.new_user['uusername'], curr_pass))
-            self.assertTrue(session['logged_in'])
+            # test right password
+            self.assertTrue(self.uh.do_login(self.new_user['uusername'], curr_pass, testing=True))
+            # self.assertTrue(session['logged_in'])
 
-            #test wrong password
-            self.uh.do_logout()
-            self.assertFalse(self.uh.do_login(self.new_user['uusername'],"notThePassword"))
+            # test wrong password
+            # self.uh.do_logout()
+            self.assertFalse(self.uh.do_login(self.new_user['uusername'], curr_pass+'LOL', testing=True))
 
-            #delete test user
-            delete_user(self.dao, uid)#so test user is not persisted
+            # delete test user
+            self.dao.delete_user_by_id(uid)  # so test user is not persisted
 
 
 if __name__ == "__main__":
