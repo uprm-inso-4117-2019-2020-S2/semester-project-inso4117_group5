@@ -118,21 +118,32 @@ class UserHandler:
 
     def check_login(self, json_input):
         if len(json_input) != 2:  # check if there are sufficient elements in input
-            return jsonify(Error="Malformed insert user request"), 400
+            print("Not enough arguments! Needs 2, got", len(json_input))
+            return False
+            # return jsonify(Error="Malformed insert user request"), 400
         try:  # check parameters are valid
             uusername = json_input['uusername']
             upassword = json_input['upassword']
-        except:
-            return jsonify(Error="Unexpected attributes in login request"), 400
+        except Exception as e:
+            print(e)
+            return False
+            # return jsonify(Error="Unexpected attributes in login request"), 400
         try:
             if uusername and upassword:
                 uid = LoginDAO().get_login_by_username_and_password(uusername, upassword)
             else:
-                return jsonify(Error="One or more attribute is empty"), 400
-        except:
-            return jsonify(Error="Login failed horribly."), 400
+                print("Either one attribute is empty or the login does not exist in DB")
+                return False
+                # return jsonify(Error="One or more attribute is empty"), 400
+        except Exception as e:
+            print(e)
+            return False
+            # return jsonify(Error="Login failed horribly."), 400
+        session['logged_in'] = True
+        session['uid'] = uid
+        return True
         # Finally returns an user dict of the inserted user.
-        return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
+        # return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
 
 
     @staticmethod
@@ -145,21 +156,21 @@ class UserHandler:
             flash("Error on logout" + err.__str__())
             return False
 
-    @staticmethod
-    def do_login(username, password):
-        try:
-            dao = UserDAO()
-            user = dao.get_user_by_username(username)
-            uid = user[0]#assuming that the uid is the first field in the row
-            db_pass = json.loads(UserHandler().get_user_by_id(uid).get_data())['User']['upassword']
-            if user and sha256_crypt.verify(password, db_pass):
-                session['logged_in'] = True
-                session['uid'] = uid
-                return True
-            return False
-        except:
-            flash('Error on login')
-            return False
+    # @staticmethod
+    # def do_login(username, password):
+    #     try:
+    #         dao = UserDAO()
+    #         user = dao.get_user_by_username(username)
+    #         uid = user[0]#assuming that the uid is the first field in the row
+    #         db_pass = json.loads(UserHandler().get_user_by_id(uid).get_data())['User']['upassword']
+    #         if user and sha256_crypt.verify(password, db_pass):
+    #             session['logged_in'] = True
+    #             session['uid'] = uid
+    #             return True
+    #         return False
+    #     except:
+    #         flash('Error on login')
+    #         return False
 
     @staticmethod
     def do_register(req):
