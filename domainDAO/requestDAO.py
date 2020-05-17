@@ -71,7 +71,7 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_request_by_status(self, rstatus: str):
+    def get_request_by_status(self, rstatus: int):
         result = []
         cursor = self.connection.cursor()
         query = "select * from request where rstatus = %s;"

@@ -1,28 +1,31 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<html>
+  <head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" id="bootstrap-css">
+    <link href="{{ url_for('static', filename='login.css') }}" type="text/css" rel="stylesheet">
 
-<div class="wrapper fadeInDown">
-  <div id="formContent">
-    <!-- Tabs Titles -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" async></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" async></script>
+    <script src="{{ url_for('static', filename='login.js') }}" type="text/javascript" async></script>
+  </head>
 
-    <!-- Icon -->
-    <div class="fadeIn first">
-      <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
+  <body>
+    <div class="header">
+      <h1 id="app-name">Help The Homies</h1>
+      <h1 id="header-register">Register</h1>
     </div>
 
-    <!-- Login Form -->
-    <form id = "login-form">
-      <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-      <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
-      <input type="submit" id = "btn" class="fadeIn fourth" value="Log In">
-    </form>
+    <div class="wrapper">
+      <div class="login-form-container">
+        <form id = "login-form">
+          <input type="text" id="login" class="fadeIn second" name="login" placeholder="username">
+          <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+          <input type="submit" id = "btn" class="fadeIn fourth" value="Log In">
+        </form>
+      </div>
+    </div>
 
-    <!-- Remind Passowrd -->
     <div id="login-error-msg-holder" style = "visibility:hidden;">
-     <p id="login-error-msg">Invalid username <span id="error-msg-second-line">and/or password</span></p>
-   </div>
-
-<script type="text/javascript" src="{{ url_for('static', filename='login.js') }}"></script>
-</div>
+      <p id="login-error-msg">Invalid username <span id="error-msg-second-line">and/or password</span></p>
+    </div>
+  </body>
+</html>
