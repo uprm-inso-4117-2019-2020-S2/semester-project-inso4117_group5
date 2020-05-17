@@ -50,6 +50,7 @@ class ProviderDAO:
         query = "select * from Provider where puser = %s"
         cursor.execute(query, (puser,))
         result = cursor.fetchone()
+        cursor.close()
         return result
 
     def get_provider_by_request_id(self, prequest):
@@ -67,6 +68,7 @@ class ProviderDAO:
         query = "delete from Provider where pid = %s"
         cursor.execute(query, (pid,))
         self.connection.commit()
+        cursor.close()
         return pid
 
     def update_provider_by_id(self, pid, puser, prequest):
@@ -77,3 +79,12 @@ class ProviderDAO:
         self.connection.commit()
         cursor.close()
         return pid
+
+    def update_status_by_prequest(self, prequest, rstatus):
+        cursor = self.connection.cursor()
+        query = "update Request set rstatus = %s" \
+                " where rid = %s;"
+        cursor.execute(query, (rstatus, prequest))
+        self.connection.commit()
+        cursor.close()
+        return prequest
