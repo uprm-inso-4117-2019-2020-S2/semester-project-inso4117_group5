@@ -1,12 +1,13 @@
 /* BASIC */
 
-html {
-  background-color: #56baed;
+* {
+  margin: 0;
+  padding: 0;
 }
 
 body {
+  background-color: #2C97FA;
   font-family: "Poppins", sans-serif;
-  height: 100vh;
 }
 
 a {
@@ -26,18 +27,41 @@ h2 {
   color: #cccccc;
 }
 
+.header {
+  width: 100%;
+  height: 65px;
 
+  background-color: white;
+  border: 1px solid black;
+  
+  display: flexbox;
+  vertical-align: middle;
+  justify-content: center;
 
+  text-shadow: 1px 2px 3px gray;
+}
+
+#app-name {
+  line-height: inherit;
+  height: 100%;
+  float: left;
+  padding-left: 10px;
+}
+
+#header-register {
+  line-height: inherit;
+  float: right;
+  padding-right: 10px;
+}
 /* STRUCTURE */
 
 .wrapper {
+  width: 100%;
+  height: 100%;
+  
   display: flex;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
-  width: 100%;
-  min-height: 100%;
-  padding: 20px;
 }
 
 #formContent {
@@ -45,13 +69,30 @@ h2 {
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 30px;
-  width: 90%;
-  max-width: 450px;
+  width: 100%;
+  
   position: relative;
   padding: 0px;
   -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   text-align: center;
+}
+
+.login-form-container {
+  width: 50%;  
+  
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 1px 2px 4px black;
+
+  display: flex;
+  justify-items: center;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#login-form {
+  padding-top: 25px;
 }
 
 #formFooter {
@@ -248,8 +289,17 @@ input[type=text]:placeholder {
   width: 100%;
 }
 
+#btn {
+  background-color: #2C97FA;
+}
 
+#login, #password {
+  background-color: lightgrey;
+}
 
+::placeholder{
+  color: #2C97FA;
+}
 /* OTHERS */
 
 *:focus {
