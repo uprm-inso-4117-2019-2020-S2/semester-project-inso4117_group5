@@ -1,6 +1,9 @@
 import os
+
 from flask import Flask
 from flask_cors import CORS
+
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Apply CORS to this app
 template_dir = "../templates"
