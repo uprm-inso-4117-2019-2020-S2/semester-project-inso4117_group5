@@ -97,6 +97,17 @@ class RequestHandler:
             print(e)
             return jsonify(ERROR=e), 500
 
+    def get_requests_by_user_status(self, status: str, id: int):
+        try:
+            requests = RequestDAO().get_requests_by_user_status(id,status)
+            results = list()
+            for row in requests:
+                results.append(self.create_request_dict(row))
+            return jsonify(Requests=results)
+        except Exception as e:
+            print(e)
+            return jsonify(ERROR=e), 500
+
     def insert(self, json_input):
         if session['logged_in']:  # check if there are sufficient elements in input
             try:  # check parameters are valid

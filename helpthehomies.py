@@ -8,23 +8,21 @@ from config import app
 
 @app.route('/')
 def home():
+    session['logged_in'] = False
     return render_template("home.html")
 
 
 @app.route('/HTH/profile', methods=['GET'])
 def profile():
-    try:
-        if session['logged_in']:
-            if request.method == 'GET':
-                user_info = UserHandler().get_user_by_id(session['uid'])
-                unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
-                inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
-                fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
+    if session['logged_in']:
+        if request.method == 'GET':
+            user_info = UserHandler().get_user_by_id(session['uid'])
+            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],0)
+            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],1)
+            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],2)
 
-                return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
-        else:
-            return redirect(url_for('user_login'))
-    except:
+            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+    else:
         return redirect(url_for('user_login'))
 
 
@@ -66,17 +64,15 @@ def user_logout():
 
 @app.route('/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
-    try:
-        if session['logged_in']:
-            if request.method == 'GET':
-                allreqs = RequestHandler().get_all_requests()
-                return render_template("provider.html", Requests = allreqs)
-            if request.method == 'POST':
-                req = RequestHandler().insert(request.json)
-        else:
-            return redirect(url_for('user_login'))
-    except:
+    if session['logged_in']:
+        if request.method == 'GET':
+            allreqs = RequestHandler().get_all_requests()
+            return render_template("provider.html", Requests = allreqs)
+        if request.method == 'POST':
+            req = RequestHandler().insert(request.json)
+    else:
         return redirect(url_for('user_login'))
+
 
 
 @app.route('/requests', methods=['GET'])
