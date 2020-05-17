@@ -1,3 +1,5 @@
+import sys
+
 from flask import jsonify, session, flash
 from passlib.hash import sha256_crypt
 from domainDAO.userDAO import UserDAO
@@ -165,3 +167,17 @@ class UserHandler:
         password_hash = sha256_crypt.encrypt(password)
         req['upassword'] = password_hash
         return UserHandler().insert_user(req)
+
+    def delete_user_by_id(self, uid: int):
+        try:
+            row = UserDAO().get_user_by_id(uid)
+            if not row:
+                return jsonify(Error="User " + str(uid) + " not found."), 404
+            else:
+                if UserDAO().delete_user_by_id(uid) > 0:
+                    return jsonify(DeletedUser=self.createUserDict(row)), 200
+                else:
+                    return jsonify(Error="Delete failed"), 404
+        except:
+            e = sys.exc_info()[0]
+            return jsonify(ERROR=e), 500

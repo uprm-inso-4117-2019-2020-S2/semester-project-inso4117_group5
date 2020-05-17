@@ -80,13 +80,11 @@ def Request_feed():
         return redirect(url_for('user_login'))
 
 
-
 @app.route('/requests', methods=['GET'])
 def getreqs():
     if request.method == 'GET':
         allreqs = RequestHandler().get_all_requests()
         return(allreqs)
-
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -99,12 +97,15 @@ def users():
         return jsonify(Error="Method not allowed."), 405
 
 
-@app.route('/user/<int:uid>', methods=['GET'])
+@app.route('/user/<int:uid>', methods=['GET', 'DELETE'])
 def user(uid: int):
     if request.method == 'GET':
         return UserHandler().get_user_by_id(uid)
+    elif request.method == 'DELETE':
+        return UserHandler().delete_user_by_id(uid)
     else:
         return jsonify(Error="Method not allowed."), 405
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -20,7 +20,7 @@ class UserDAO:
     def get_all_users(self):
         result = list()
         cursor = self.connection.cursor()
-        query = "Select * from Users"
+        query = "Select * from Users;"
         cursor.execute(query)
         for row in cursor:
             result.append(row)
@@ -47,24 +47,37 @@ class UserDAO:
 
     def get_user_by_username(self, uusername):
         cursor = self.connection.cursor()
-        query = "select * from Users where uusername = %s"
+        query = "select * from Users where uusername = %s;"
         cursor.execute(query, (uusername,))
         result = cursor.fetchone()
         return result
 
     def get_user_by_email(self, uemail):
         cursor = self.connection.cursor()
-        query = "select * from Users where uemail = %s"
+        query = "select * from Users where uemail = %s;"
         cursor.execute(query, (uemail,))
         result = cursor.fetchone()
         return result
 
-    def delete_user_by_id(self, uid):
+    def delete_user_by_id(self, uid: int) -> int:  # returns the number of rows deleted in whole database
         cursor = self.connection.cursor()
-        query = "delete from Users where uid = %s"
+        count = 0
+        query = "DELETE FROM provider WHERE puser IN (SELECT %s FROM users);"
         cursor.execute(query, (uid,))
+        count += cursor.rowcount
+        query = "DELETE FROM request WHERE ruser IN (SELECT %s FROM users);"
+        cursor.execute(query, (uid,))
+        count += cursor.rowcount
+        query = "DELETE FROM login WHERE uid IN (SELECT %s FROM users);"
+        cursor.execute(query, (uid,))
+        count += cursor.rowcount
+        query = "DELETE FROM users WHERE uid = %s returning *;"
+        cursor.execute(query, (uid,))
+        count += cursor.rowcount
+        # result = cursor.fetchone()
         self.connection.commit()
-        return uid
+        cursor.close()
+        return count
 
     def update_user(self, uusername, upassword, uemail, uphone):
         cursor = self.connection.cursor()

@@ -27,28 +27,31 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_request_by_id(self, rid):
+    def get_request_by_id(self, rid: int):
         cursor = self.connection.cursor()
         query = "select * from request where rid = %s;"
-        cursor.execute(query,(rid,))
+        cursor.execute(query, (rid,))
         result = cursor.fetchone()
+        cursor.close()
         return result
 
-    def get_request_by_title(self, rtitle):
+    def get_request_by_title(self, rtitle: str):
         cursor = self.connection.cursor()
         query = "select * from request where rtitle = %s;"
         cursor.execute(query, (rtitle,))
         result = cursor.fetchone()
+        cursor.close()
         return result
 
-    def get_request_by_location(self, rlocation):
+    def get_request_by_location(self, rlocation: str):
         cursor = self.connection.cursor()
         query = "select * from request where rlocation = %s;"
         cursor.execute(query, (rlocation,))
         result = cursor.fetchone()
+        cursor.close()
         return result
 
-    def get_requests_by_user_id(self, ruser):
+    def get_requests_by_user_id(self, ruser: int):
         result = []
         cursor = self.connection.cursor()
         query = "select * from request where ruser = %s;"
@@ -58,17 +61,17 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_requests_by_user_status(self, ruser,status):
+    def get_requests_by_user_status(self, ruser: int, rstatus: str):
         result = []
         cursor = self.connection.cursor()
         query = "select * from request where ruser = %s and rstatus= %s;"
-        cursor.execute(query, (ruser,rstatus,))
+        cursor.execute(query, (ruser, rstatus,))
         for row in cursor:
             result.append(row)
         cursor.close()
         return result
 
-    def get_request_by_status(self, rstatus):
+    def get_request_by_status(self, rstatus: str):
         result = []
         cursor = self.connection.cursor()
         query = "select * from request where rstatus = %s;"
@@ -78,10 +81,10 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def insert_request(self, rtitle, rdescription, rlocation, ruser):
+    def insert_request(self, rtitle, rdescription, rlocation, rstatus, ruser):
         cursor = self.connection.cursor()
         query = "insert into request(rtitle, rdescription, rlocation, rstatus, ruser)"\
-                " values(%s, %s, %s, 0 , %s) returning rid;"
+                " values(%s, %s, %s, %s, %s) returning rid;"
         cursor.execute(query, (rtitle, rdescription, rlocation, rstatus, ruser))
         rid = cursor.fetchone()[0]
         self.connection.commit()
@@ -93,6 +96,7 @@ class RequestDAO:
         query = "delete from request where rid = %s;"
         cursor.execute(query, (rid,))
         self.connection.commit()
+        cursor.close()
         return rid
 
     def update_request_by_id(self, rid, rtitle, rdescription, rlocation, rstatus, ruser):

@@ -1,3 +1,5 @@
+import sys
+
 from flask import jsonify
 from domainDAO.requestDAO import RequestDAO
 import re
@@ -57,40 +59,43 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-                print(row)
             return jsonify(requests=results)
         except:
-            return jsonify(ERROR="Server error!"), 500
+            e = sys.exc_info()[0]
+            return jsonify(ERROR=e), 500
 
-    def get_request_by_id(self, id: int):
+    def get_request_by_uid(self, uid: int):
         try:
-            requests = RequestDAO.get_all_requests()
+            requests = RequestDAO().get_requests_by_user_id(uid)
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(requests=results)
         except:
-            return jsonify(ERROR="Server error!"), 500
+            e = sys.exc_info()[0]
+            return jsonify(ERROR=e), 500
 
-    def get_request_by_location(self, location):
+    def get_request_by_location(self, location: str):
         try:
-            requests = RequestDAO.get_request_by_location(location)
+            requests = RequestDAO().get_request_by_location(location)
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(requests=results)
         except:
-            return jsonify(ERROR="Server error!"), 500
+            e = sys.exc_info()[0]
+            return jsonify(ERROR=e), 500
 
-    def get_request_by_status(self, status):
+    def get_request_by_status(self, status: str):
         try:
-            requests = RequestDAO.get_request_by_status(status)
+            requests = RequestDAO().get_request_by_status(status)
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
             return jsonify(requests=results)
         except:
-            return jsonify(ERROR="Server error!"), 500
+            e = sys.exc_info()[0]
+            return jsonify(ERROR=e), 500
 
     def insert(self, json_input):
         if session['logged_in']:  # check if there are sufficient elements in input
