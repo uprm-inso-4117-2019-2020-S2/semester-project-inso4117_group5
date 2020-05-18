@@ -4,20 +4,22 @@ from config.dbconfig import DATABASE_URL
 
 class RequestDAO:
     def __init__(self):
-        try:
-            self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
-            # self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
-            #                                    host=heroku_config['host'], database=heroku_config['dbname'])
-            cursor = self.connection.cursor()
+        while True:
+            try:
+                self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+                # self.connection = psycopg2.connect(user=heroku_config['user'], password=heroku_config['password'],
+                #                                    host=heroku_config['host'], database=heroku_config['dbname'])
+                cursor = self.connection.cursor()
 
-            # Print PostgreSQL version
-            cursor.execute("SELECT version();")
-            record = cursor.fetchone()
-            print("You are connected to - ", record, "\n")
-        except (Exception, psycopg2.Error) as error:
-            print("Error while connecting to PostgreSQL database in heroku", error)
+                # Print PostgreSQL version
+                cursor.execute("SELECT version();")
+                record = cursor.fetchone()
+                print("You are connected to - ", record, "\n")
+                break
+            except (Exception, psycopg2.Error) as error:
+                print("Error while connecting to PostgreSQL database in heroku", error)
 
-    def get_all_requests(self):
+    def get_all_requests(self) -> list:
         result = list()
         cursor = self.connection.cursor()
         query = "select * from request;"
@@ -27,7 +29,7 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_request_by_id(self, rid: int):
+    def get_request_by_id(self, rid: int) -> tuple:
         cursor = self.connection.cursor()
         query = "select * from request where rid = %s;"
         cursor.execute(query, (rid,))
@@ -35,24 +37,28 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_request_by_title(self, rtitle: str):
+    def get_request_by_title(self, rtitle: str) -> list:
+        results = list()
         cursor = self.connection.cursor()
         query = "select * from request where rtitle = %s;"
         cursor.execute(query, (rtitle,))
-        result = cursor.fetchone()
+        for row in cursor:
+            results.append(row)
         cursor.close()
-        return result
+        return results
 
-    def get_request_by_location(self, rlocation: str):
+    def get_request_by_location(self, rlocation: str) -> list:
+        results = list()
         cursor = self.connection.cursor()
         query = "select * from request where rlocation = %s;"
         cursor.execute(query, (rlocation,))
-        result = cursor.fetchone()
+        for row in cursor:
+            results.append(row)
         cursor.close()
-        return result
+        return results
 
-    def get_requests_by_user_id(self, ruser: int):
-        result = []
+    def get_requests_by_user_id(self, ruser: int) -> list:
+        result = list()
         cursor = self.connection.cursor()
         query = "select * from request where ruser = %s;"
         cursor.execute(query, (ruser,))
@@ -61,8 +67,8 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_requests_by_user_status(self, ruser: int, rstatus: str):
-        result = []
+    def get_requests_by_user_status(self, ruser: int, rstatus: str) -> list:
+        result = list()
         cursor = self.connection.cursor()
         query = "select * from request where ruser = %s and rstatus = %s;"
         cursor.execute(query, (ruser, rstatus,))
@@ -71,8 +77,8 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def get_request_by_status(self, rstatus: int):
-        result = []
+    def get_request_by_status(self, rstatus: int) -> list:
+        result = list()
         cursor = self.connection.cursor()
         query = "select * from request where rstatus = %s;"
         cursor.execute(query, (rstatus,))
@@ -81,7 +87,7 @@ class RequestDAO:
         cursor.close()
         return result
 
-    def insert_request(self, rtitle, rdescription, rlocation, rstatus, ruser):
+    def insert_request(self, rtitle, rdescription, rlocation, rstatus, ruser) -> int:
         cursor = self.connection.cursor()
         query = "insert into request(rtitle, rdescription, rlocation, rstatus, ruser)"\
                 " values(%s, %s, %s, %s, %s) returning rid;"
@@ -104,11 +110,12 @@ class RequestDAO:
         cursor.close()
         return count
 
-    def update_request_by_id(self, rid, rtitle, rdescription, rlocation, rstatus, ruser):
+    def update_request_by_id(self, rid, rtitle, rdescription, rlocation, rstatus, ruser) -> int:
         cursor = self.connection.cursor()
         query = "update request set rtitle = %s, rdescription = %s, rlocation = %s, rstatus = %s, ruser = %s"\
-                " where rid = %s;"
-        cursor.execute(query, (rid, rtitle, rdescription, rlocation, rstatus, ruser))
+                " where rid = %s RETURNING rid;"
+        cursor.execute(query, (rtitle, rdescription, rlocation, rstatus, ruser, rid))
+        result = cursor.fetchone()[0]
         self.connection.commit()
         cursor.close()
-        return rid
+        return result
