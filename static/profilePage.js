@@ -1,18 +1,18 @@
 // AUTHOR: HECTOR JIMENEZ MERCADO
 
-let username = "John Marston";
+let username = "GuandaBasket";
 let pendingTicketsContainer = document.getElementById('pending-ticket-container');
 let acceptedTicketsContainer = document.getElementById('accepted-ticket-container')
 
 // Mock Data
-var pendingTickets =  
+var pendingTickets =
 [
     {
         "title": "Water",
         "location": "San Juan",
         "quantity": 21,
         "provider": "John Balbuena"
-    }, 
+    },
 
     {
         "title": "Rice",
@@ -70,8 +70,8 @@ var acceptedTickets = [
         "location": "San Juan",
         "quantity": 21,
         "provider": "John Balbuena"
-    }, 
-    
+    },
+
 ]
 
 function load() {
@@ -86,7 +86,7 @@ function loadPendingTickets() {
         newTicket.id = 'ticket';
         newTicket.className = "fadeInDown"
 
-        newTicket.innerHTML= 
+        newTicket.innerHTML=
             createTicket(ticket.title, ticket.location, ticket.quantity, ticket.provider)
 
         pendingTicketsContainer.appendChild(newTicket);
@@ -99,15 +99,15 @@ function loadAcceptedTickets(){
         newTicket.id = 'ticket';
         newTicket.className = "fadeInDown"
 
-        newTicket.innerHTML = 
+        newTicket.innerHTML =
             createTicket(ticket.title, ticket.location, ticket.quantity, ticket.provider)
 
         acceptedTicketsContainer.appendChild(newTicket);
     }
 }
 
-function createTicket(title, location, quantity, provider) {    
-    return `                
+function createTicket(title, location, quantity, provider) {
+    return `
     <h4 style="color: whitesmoke;">${title}</h4>
     <p>Location: ${location}</p>
     <p style="color: red;">Quantity: x${quantity}</p>

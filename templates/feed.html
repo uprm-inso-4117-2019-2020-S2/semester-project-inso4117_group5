@@ -3,17 +3,18 @@
 <html>
   <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type ="text/css" rel="stylesheet" id="bootstrap-css">
-    <link href="../static/homePage.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='homePage.css') }}">
 
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" async></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" async></script>
     <script src="../static/homePage.js" type="text/javascript" async></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homePage.js') }}">
   </head>
 
   <body onload="load()">
     <div class="header">
       <h1 id="app-name">Help The Homies</h1>
-      <a href="./profilePage.html"><h1 id="header-register">@</h1></a>
+      <a href="/HTH/profile"><h1 id="header-register">@</h1></a>
     </div>
 
     <div class="wrapper" id="post-feed">
@@ -21,7 +22,7 @@
           <form id ="post-form">
             <input type="text" id="resource" name="resource" placeholder="resource">
             <input type="text" id="location" name="location" placeholder="location">
-            <textarea id="description" rows= "6" name="decription" class= "fadeIn"> What can you offer? </textarea>
+            <textarea id="description" rows= "6" name="decription" class= "fadeIn"> What do you need? </textarea>
             <input type="submit" id = "btn" value="Post" onclick="submitPost()">
           </form>
         </div>

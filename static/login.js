@@ -20,7 +20,7 @@ loginButton.addEventListener("click", (e) => {
       dataType: 'json',
       success: function(data) {
         if(data.logged_in){
-         window.location.assign("127.0.0.1:5000/helpsomehommies")
+         window.location.assign("127.0.0.1:5000/HTH/helpsomehommies")
         }
         else{
           alert("Log in unsuccesful!")
