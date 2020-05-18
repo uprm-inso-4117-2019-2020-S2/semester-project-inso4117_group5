@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
+
+from domainHandlers.provider import ProviderHandler
 from domainHandlers.user import UserHandler
 from domainHandlers.request import RequestHandler
 
@@ -109,6 +111,16 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     elif request.method == 'DELETE':
         return UserHandler().delete_user_by_id(uid)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+
+@app.route('/provider', methods=['GET', 'POST'])
+def providers():
+    if request.method == 'GET':
+        return ProviderHandler().get_all_providers()
+    if request.method == 'POST':
+        return ProviderHandler().insert_provider(request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
 

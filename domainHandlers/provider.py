@@ -6,7 +6,8 @@ import json
 
 
 # AUTHOR: Fernando
-
+from domainDAO.requestDAO import RequestDAO
+from domainHandlers.request import RequestHandler
 
 
 class ProviderHandler:
@@ -71,13 +72,22 @@ class ProviderHandler:
             return jsonify(Error="Unexpected attributes in insert provider request"), 400
         try:
             if puser and prequest:
+                # Validate that puser != ruser:
+                if puser == RequestHandler.create_request_dict(RequestDAO().get_request_by_id(prequest))['ruser']:
+                    return jsonify(Error="User cannot provide his own request"), 400
+                # Insert provider
                 dao = ProviderDAO()
                 pid = dao.insert_provider(puser, prequest)
+                # Update status of request
+                form = {}
+                form['prequest'] = prequest
+                form['rstatus'] = 'InProgress'  #  YELLOW, its updated to delivery on it's way.
+                self.update_request_status_by_provider(form)
             else:
                 return jsonify(Error="One or more attribute is empty"), 400
         except:
             return jsonify(Error="Provider insertion failed horribly."), 400
-        # Finally returns an user dict of the inserted user.
+        # Finally returns an user dict of the inserted provider.
         return jsonify(Provider=self.createProviderDict([pid, puser, prequest])), 201
 
     def delete_provider(self, puser: int):
@@ -106,5 +116,25 @@ class ProviderHandler:
                 return jsonify(Error="One or more attribute is empty"), 400
         except:
             return jsonify(Error="Provider update failed horribly."), 400
-        # Finally returns an user dict of the inserted user.
+        # Finally returns an user dict of the inserted provider.
         return jsonify(Provider=self.createProviderDict([pid, puser, prequest])), 201
+
+    def update_request_status_by_provider(self, json_input):
+        if len(json_input) != 2:  # check if there are sufficient elements in input
+            return jsonify(Error="Malformed update status request"), 400
+        try:  # check parameters are valid
+            prequest = json_input['prequest']
+            rstatus = json_input['rstatus']
+        except:
+            return jsonify(Error="Unexpected attributes in status update request"), 400
+        try:
+            if prequest and rstatus:
+                dao = ProviderDAO()
+                pid = dao.update_status_by_prequest(prequest, rstatus)
+                json_input['pid'] = pid  # Add pid to the result dictionary (prequest, rstatus, pid)
+            else:
+                return jsonify(Error="One or more attribute is empty"), 400
+        except:
+            return jsonify(Error="Status update failed horribly."), 400
+        # Finally returns the request & status that were updated.
+        return jsonify(RequestStatus=json_input), 201

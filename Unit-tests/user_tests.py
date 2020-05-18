@@ -8,7 +8,7 @@ import sys
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 sys.path.append(basedir)  # to work with these imports
-from config import app
+from helpthehomies import app
 from domainHandlers.user import UserHandler
 from domainDAO.userDAO import UserDAO
 
