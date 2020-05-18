@@ -1,0 +1,50 @@
+.profile-feed {
+    text-align: center;
+}
+
+.user-info-container {
+    line-height: 5px;
+    position: relative;
+    top:30px;
+}
+
+.profile-picture {
+    width: 146px;
+    height: 146px;
+    border-radius: 100%;
+    box-shadow: 1px 3px 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+.requests-container {
+    overflow-y: scroll;
+    margin: 4% auto;
+    line-height: 0px;
+    position: relative;
+    width: 813px;
+    height: 180px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), inset 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+    border: solid 2px #000000;
+    background-color: #b0a0ef;
+}
+
+.ticket {
+    position: inherit;
+    float:left;
+    margin-top: 2%;
+    margin-left: 3%;
+    bottom: 8%;
+    width: 168px;
+    height: 120px;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.5);
+    border: solid 2px #000000;
+    background-color: #cdfafd;
+}
+
+.request-text-header {
+    text-align: left;
+    margin-left: 3%;
+    margin-top: 3%;
+    font-family: Helvetica;
+}

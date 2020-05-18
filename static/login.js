@@ -1,4 +1,4 @@
-const loginForm = document.getElementById("login-form");
++-const loginForm = document.getElementById("login-form");
 const loginButton = document.getElementById("btn");
 const loginErrorMsg = document.getElementById("login-error-msg");
 
@@ -8,8 +8,8 @@ loginButton.addEventListener("click", (e) => {
     const password = loginForm.password.value;
 
     const reqObj = {
-      "username": username,
-      "password": password
+      "uusername": username,
+      "upassword": password
     };
 
     $.ajax({
@@ -20,7 +20,7 @@ loginButton.addEventListener("click", (e) => {
       dataType: 'json',
       success: function(data) {
         if(data.logged_in){
-          alert("Succesful log in!")
+         window.location.assign("127.0.0.1:5000/helpsomehommies")
         }
         else{
           alert("Log in unsuccesful!")
