@@ -1,6 +1,6 @@
 import sys
 
-from flask import jsonify
+from flask import jsonify, session
 from domainDAO.requestDAO import RequestDAO
 import re
 import json
@@ -106,7 +106,7 @@ class RequestHandler:
             return jsonify(Requests=results)
         except Exception as e:
             print(e)
-            return jsonify(ERROR=e), 500
+            return jsonify(ERROR="Unexpected error"), 500
 
     def insert(self, json_input):
         if session['logged_in']:  # check if there are sufficient elements in input
@@ -123,6 +123,7 @@ class RequestHandler:
             try:
                 if rid and rtitle and rdescription and rlocation and ruser and rstatus:
                     dao = RequestDAO().insert(rtitle,rdescription,rlocation,ruser)
+                    return jsonify(rid = dao), 200
 
                 else:
                     return jsonify(Error="One or more attribute is empty"), 400
