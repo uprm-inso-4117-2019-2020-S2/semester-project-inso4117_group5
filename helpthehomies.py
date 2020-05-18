@@ -1,9 +1,21 @@
 from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
+
+from domainHandlers.provider import ProviderHandler
 from domainHandlers.user import UserHandler
 from domainHandlers.request import RequestHandler
 
-from config import app
+import os
+
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Apply CORS to this app
+template_dir = "./templates"
+static_dir = "./static"
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+app.secret_key = '5791628bb0b13ce0c676dfde280ba245'
+app.config['JSON_SORT_KEYS'] = False  # This makes jsonify NOT sort automatically.
+CORS(app)
 
 
 @app.route('/')
@@ -21,7 +33,7 @@ def profile():
             inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],'unfuf')
             fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],'pending')
             return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
-        
+
     else:
         return redirect(url_for('user_login'))
 
@@ -70,7 +82,7 @@ def Request_feed():
             allreqs = RequestHandler().get_all_requests()
             return render_template("provider.html", Requests = allreqs)
         if request.method == 'POST':
-            req = RequestHandler().insert(request.json)
+            return RequestHandler().insert_request(request.json)
     else:
         return redirect(url_for('user_login'))
 
@@ -99,6 +111,16 @@ def user(uid: int):
         return UserHandler().get_user_by_id(uid)
     elif request.method == 'DELETE':
         return UserHandler().delete_user_by_id(uid)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+
+@app.route('/provider', methods=['GET', 'POST'])
+def providers():
+    if request.method == 'GET':
+        return ProviderHandler().get_all_providers()
+    if request.method == 'POST':
+        return ProviderHandler().insert_provider(request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
 
