@@ -1,6 +1,6 @@
 // AUTHOR: HECTOR JIMENEZ MERCADO
 
-let feed = document.getElementById('post-feed');
+let feed = document.getElementById('post-container');
 let postForm = document.getElementById('post-form')
 
 // Mock Data
@@ -50,13 +50,8 @@ function load() {
 
 function loadPosts() {
     for(let post of posts){
-        let newPost = document.createElement('div');
-        newPost.className = "post";
-
-        newPost.innerHTML = 
-            createPost(post.provider, post.title, post.tel, post.description, post.location);
-
-        feed.appendChild(newPost);
+        feed.innerHTML += createPost(post.provider, 
+            post.title, post.tel, post.description, post.location)
     }
 }
 
@@ -69,24 +64,18 @@ function submitPost(){
         "tel": user.tel,
     }
 
-    console.log(newPost)
-
-    let newPostElement = document.createElement('div');
-    newPostElement.className = "post";
-
-    newPostElement.innerHTML = 
-        createPost(newPost.provider, newPost.title, 
-            newPost.tel, newPost.description, newPost.location);
-
-    feed.appendChild(newPostElement);
-
+    feed.innerHTML = createPost(newPost.provider, newPost.title, newPost.tel,
+        newPost.description, newPost.location) + feed.innerHTML
 }
 
 function createPost(username, title, phoneNumber, description, location){
-    return `        
-    <div id = "post-header"><h2>${username}</h2></div>
-    <h1 style="color:#2C97FA; text-shadow: 1px 1px 4px black;">${title}</h1>
-    <p>${phoneNumber}</p><hr>
-    <p id="paragraph">${description}</p>
-    <p id="post-location">Location: ${location}</p>`
+    return `
+    <div class= "post">        
+        <div id = "post-header"><h2>${username}</h2></div>
+        <h1 style="color:#2C97FA; text-shadow: 1px 1px 4px black;">${title}</h1>
+        <p>${phoneNumber}</p><hr>
+        <p id="paragraph">${description}</p>
+        <p id="post-location">Location: ${location}</p>
+    </div>
+    `
 }

@@ -18,13 +18,15 @@
 
     <div class="wrapper" id="post-feed">
         <div class="post-form-container">
-          <form id ="post-form">
+          <form id ="post-form" onsubmit="submitPost()">
             <input type="text" id="resource" name="resource" placeholder="resource">
             <input type="text" id="location" name="location" placeholder="location">
-            <textarea id="description" rows= "6" name="decription" class= "fadeIn"> What can you offer? </textarea>
-            <input type="submit" id = "btn" value="Post" onclick="submitPost()">
+            <textarea id="description" rows= "6" name="decription" class= "fadeIn" placeholder="What can you Offer?"></textarea>
+            <input type="submit" id = "btn" value="Post">
           </form>
+
         </div>
+      <div id="post-container"></div>
     </div>
   </body>
 </html>

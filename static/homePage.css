@@ -85,6 +85,7 @@
   }
 
   #description {
+      padding: 2%;
       width: 80%;
       border-radius: 8px;
   }
