@@ -63,7 +63,7 @@ class BasicTests(unittest.TestCase):
 
     def test_register_page_post(self):
         response = self.app.post('/register', json=self.new_user)
-        self.assertEqual(response.status_code, 302)
+        self.assertTrue("signedIn" in response.json)
 
     def test_login_page_get(self):
         response = self.app.get('/HTH/login')
@@ -74,7 +74,7 @@ class BasicTests(unittest.TestCase):
 
         response = self.app.post('/HTH/login', json={"uusername": self.new_user['uusername'],
         "upassword": self.new_user['upassword']})
-        self.assertEqual(response.status_code, 302)
+        self.assertTrue("logged_in" in response.json)
 
         response2 = self.app.post('/HTH/login', json={"uusername": self.new_user['uusername'],
         "upassword": "notthepassword"})
@@ -117,15 +117,14 @@ class BasicTests(unittest.TestCase):
             uid = session['uid']
 
         #with acutal correct options
-        options = {"rid":12,
-        "rtitle": "t",
+        options = {"rtitle": "t",
         "rdescription": "d",
         "rlocation": "l",
         "ruser": uid,
         "rstatus":"fulfilled"}
 
         response= self.app.post('/helpsomehommies', json=options)
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 201)
 
     def test_requests(self):
         response = self.app.get('/requests')
