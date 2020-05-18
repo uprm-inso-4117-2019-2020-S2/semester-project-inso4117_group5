@@ -84,6 +84,7 @@ function loadPendingTickets() {
     for(let ticket of pendingTickets){
         let newTicket = document.createElement("div");
         newTicket.id = 'ticket';
+        newTicket.className = "fadeInDown"
 
         newTicket.innerHTML= 
             createTicket(ticket.title, ticket.location, ticket.quantity, ticket.provider)
@@ -96,6 +97,7 @@ function loadAcceptedTickets(){
     for(let ticket of acceptedTickets){
         let newTicket = document.createElement("div");
         newTicket.id = 'ticket';
+        newTicket.className = "fadeInDown"
 
         newTicket.innerHTML = 
             createTicket(ticket.title, ticket.location, ticket.quantity, ticket.provider)
