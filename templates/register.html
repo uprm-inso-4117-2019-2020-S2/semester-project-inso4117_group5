@@ -1,0 +1,31 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
+    </div>
+
+    <!-- Login Form -->
+    <form id = "login-form">
+      <input type="text" id="login" class="fadeIn second" name="login" placeholder="username">
+      <input type="email" id="email" class="fadeIn second input-field" name="email" placeholder="email">
+      <input type="tel" id="phone" class="fadeIn second input-field" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" name="phone" placeholder="phone">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+      <input type="submit" id = "btn" class="fadeIn fourth" value="Register">
+    </form>
+
+    <!-- Remind Passowrd -->
+    <div id="login-error-msg-holder" style = "visibility:hidden;">
+     <p id="login-error-msg">Invalid username <span id="error-msg-second-line">and/or password</span></p>
+   </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='register.js') }}"></script>
+</div>
+</div>

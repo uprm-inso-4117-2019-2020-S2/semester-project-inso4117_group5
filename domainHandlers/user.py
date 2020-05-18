@@ -1,36 +1,39 @@
-from flask import jsonify
-from domainDAO import userDAO
+import sys
+
+from flask import jsonify, session, flash
+from passlib.hash import sha256_crypt
+from domainDAO.userDAO import UserDAO
+from domainDAO.loginDAO import LoginDAO
 import re
 import json
 
-#AUTHOR: Guillermo
-#The User Handler will be called in the main and will be responsible for handling front-end and back-end interactions.
-#The first methods implemented are meant to test the db-interacion that would ocurr through the helpthehomies main
-#and our domain. We will reicive a request for information and we will supply it by asking the Data access object (DAO)
-#for the information wanted, creating a dictionarry and assing it off as json file bak to the main.
+
+# AUTHOR: Guillermo
+# The User Handler will be called in the main and will be responsible for handling front-end and back-end interactions.
+# The first methods implemented are meant to test the db-interaction that would occur through the helpthehomies main
+# and our domain. We will receive a request for information and we will supply it by asking the Data access object (DAO)
+# for the information wanted, creating a dictionary and passing it off as json file bak to the main.
+
 
 class UserHandler:
-    def createUserDict(self,row):
+    def createUserDict(self, row):
         user = {}
-        #cant be negative
+        # cant be negative
         user['uid'] = row[0]
-        #limited to 21 chars
-        user['uuser'] = row[1]
-        #limited to 21 numbers and cap
+        # limited to 21 chars
+        user['uusername'] = row[1]
+        # limited to 21 numbers and cap
         user['upassword'] = row[2]
-        #email format
+        # email format
         user['uemail'] = row[3]
-        #phone format
+        # phone format
         user['uphone'] = row[4]
-        #limited to 21
-        user['ulocation'] = row[5]
-        #float value
-        user['urating'] = row[6]
 
         return user
 
-        #making sure a valid formated user was given, using order provided by the dictionary above
-    def validateUser(self,user):
+        # making sure a valid formated user was given, using order provided by the dictionary above
+
+    def validateUser(self, user):
         if user[0] < 0:
             return False
         elif len(user[1]) > 21:
@@ -41,15 +44,11 @@ class UserHandler:
             return False
         elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user[4]):
             return False
-        elif len(user[5]) > 21:
-            return False
-        elif user[6] > 1:
-            return False
         else:
             return True
 
-    def validateUserJSON(self,userJSON):
-        #turn json to dictionary
+    def validateUserJSON(self, user):
+        # turn json to dictionary
         # user =
         if user['uid'] < 0:
             return False
@@ -59,18 +58,144 @@ class UserHandler:
             return False
         elif not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user['uemail']):
             return False
-        elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', user['uphone']):
-            return False
-        elif len(user['ulocation']) > 21:
-            return False
-        elif user['urating'] > 1:
+        elif not re.match(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$',
+                          user['uphone']):
             return False
         else:
             return True
 
-
-
-    #we should make a query for the user id and username to validate
+    # we should make a query for the user id and username to validate
     # def verifyIfUserExists(self,uid):
 
-    # def getAllUsers():
+    def get_all_users(self):
+        try:
+            users = UserDAO().get_all_users()
+            results = list()
+            for row in users:
+                results.append(self.createUserDict(row))
+            return jsonify(Users=results)
+        except:
+            return jsonify(ERROR="Server error!"), 500
+
+    def get_user_by_id(self, uid: int):
+        try:
+            user = UserDAO().get_user_by_id(uid)
+            if user:
+                return jsonify(User=self.createUserDict(user))
+            else:
+                return jsonify(ERROR="User Not Found"), 404
+        except:
+            return jsonify(ERROR="Handler Error"), 500
+
+    def insert_user(self, json_input):
+        if len(json_input) != 4:  # check if there are sufficient elements in input
+            return jsonify(Error="Malformed insert user request"), 400
+        try:  # check parameters are valid
+            uusername = json_input['uusername']
+            upassword = json_input['upassword']
+            uemail = json_input['uemail']
+            uphone = json_input['uphone']
+        except:
+            return jsonify(Error="Unexpected attributes in insert user request"), 400
+        try:
+            if uusername and upassword and uemail and uphone:
+                dao = UserDAO()
+                # if dao.get_user_by_email(uemail):  # checks if email exists in database. EMAILS MUST BE UNIQUE.
+                #     return jsonify(Error="User with that email already exists. Please try a different one."), 400
+                # elif dao.get_user_by_username(uusername):  # same but with username.
+                #     return jsonify(Error="User with that username already exists. Please try a different one."), 400
+                uid = dao.insert_user(uusername, upassword, uemail, uphone)
+            else:
+                return jsonify(Error="One or more attribute is empty"), 400
+        except:
+            return jsonify(Error="User insertion failed horribly."), 400
+        try:
+            LoginDAO().insert_login(uusername, upassword, uid)
+        except:
+            return jsonify(Error="Login insertion failed horribly."), 400
+        # Finally returns an user dict of the inserted user.
+        return jsonify(User=self.createUserDict([uid, uusername, upassword, uemail, uphone])), 201
+
+    def check_login(self, json_input, testing=False):
+        if len(json_input) != 2:  # check if there are sufficient elements in input
+            print("Not enough arguments! Needs 2, got", len(json_input))
+            return False
+            # return jsonify(Error="Malformed insert user request"), 400
+        try:  # check parameters are valid
+            uusername = json_input['uusername']
+            upassword = json_input['upassword']
+        except Exception as e:
+            print(e)
+            return False
+            # return jsonify(Error="Unexpected attributes in login request"), 400
+        try:
+            if uusername and upassword:
+                uid = LoginDAO().get_login_by_username_and_password(uusername, upassword)
+            else:
+                print("Either one attribute is empty or the login does not exist in DB")
+                return False
+                # return jsonify(Error="One or more attribute is empty"), 400
+        except Exception as e:
+            print(e)
+            print("Login credentials are incorrect")
+            return False
+            # return jsonify(Error="Login failed horribly."), 400
+        if not testing:
+            session['logged_in'] = True
+            session['uid'] = uid
+        return True
+        # Finally returns an user dict of the inserted user.
+        # return jsonify(User=self.createUserDict(UserDAO().get_user_by_id(uid))), 200
+
+    @staticmethod
+    def do_logout():
+        try:
+            session['logged_in'] = False
+            session.pop('uid', None)
+            return True
+        except Exception as err:
+            flash("Error on logout" + err.__str__())
+            return False
+
+    def do_login(self, username: str, password: str, testing: bool = False):
+        try:
+            dao = UserDAO()
+            user = dao.get_user_by_username(username)
+            uid = user[0]  # assuming that the uid is the first field in the row
+            db_pass = json.loads(self.get_user_by_id(uid).get_data())['User']['upassword']
+            if user and sha256_crypt.verify(password, db_pass):
+                if not testing:
+                    session['logged_in'] = True
+                    session['uid'] = uid
+                return True
+            return False
+        except Exception as e:
+            print(e)
+            if not testing:
+                flash('Error on login')
+            return False
+
+    def do_register(self, req):
+        password = req['upassword']
+        password_hash = sha256_crypt.encrypt(password)
+        req['upassword'] = password_hash
+        return self.insert_user(req)
+
+    @staticmethod
+    def do_password_check(req):
+
+        pass
+
+    def delete_user_by_id(self, uid: int):
+        try:
+            row = UserDAO().get_user_by_id(uid)
+            if not row:
+                return jsonify(Error="User " + str(uid) + " not found."), 404
+            else:
+                if UserDAO().delete_user_by_id(uid) > 0:
+                    return jsonify(DeletedUser=self.createUserDict(row)), 200
+                else:
+                    return jsonify(Error="Delete failed"), 404
+        except Exception as e:
+            print(e)
+            return jsonify(ERROR=e), 500

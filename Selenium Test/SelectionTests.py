@@ -37,7 +37,7 @@ class ChromeSelection(unittest.TestCase):
     def test_SelectionScreenPrvider(self):
         self.driverC.get('http://127.0.0.1:5000/')
         self.assertTrue(self.driverC.find_element_by_name('providerBtn').is_displayed())
-        # self.assertEqual('Select the role you want to log in as', self.driverC.find_element_by_name('role-selection').text)
+        #self.assertEqual('Select the role you want to log in as', self.driverC.find_element_by_name('role-selection').text)
         self.assertEqual('PROVIDER', self.driverC.find_element_by_name('providerBtn').text)
         self.assertTrue(self.driverC.find_element_by_name('providerBtn').is_displayed())
         self.driverC.find_element_by_name('providerBtn').click()
@@ -56,8 +56,3 @@ class ChromeSelection(unittest.TestCase):
 
 if __name__=='__main__':
     unittest.main(testRunner=HtmlTestRunner.HtmlTestRunner(output='../Selenium Test/Reports'))
-
-
-
-
-

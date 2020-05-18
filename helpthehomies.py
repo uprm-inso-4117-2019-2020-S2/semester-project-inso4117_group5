@@ -1,54 +1,107 @@
-from flask import Flask, jsonify, request , redirect , url_for, render_template
+from flask import Flask, jsonify, request , redirect , url_for, render_template, session, flash
 from flask_cors import CORS, cross_origin
 from domainHandlers.user import UserHandler
-# Apply CORS to this app
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-CORS(app)
-#lol
-user = [1,'Morsa','faces44','morsa@gmail.com','7899','Quebra',.99]
+from domainHandlers.request import RequestHandler
 
-@app.route('/usertest')
-def userTest():
-    userdict= {}
-    if UserHandler().validateUser(user):
-        userdict = UserHandler().createUserDict(user)
-    return jsonify(User=userdict)
-
+from config import app
 
 
 @app.route('/')
 def home():
-    return render_template("selection.html")
+    session['logged_in'] = False
+    return render_template("home.html")
 
-@app.route('/provider')
-def provider():
-    return render_template("provider.html")
 
-@app.route('/requester')
-def requester():
-    return render_template("requester.html")
+@app.route('/HTH/profile', methods=['GET','POST'])
+def profile():
+    if session['logged_in']:
+        if request.method == 'GET':
+            user_info = UserHandler().get_user_by_id(session['uid'])
+            unf_req = RequestHandler().get_requests_by_user_status(session['uid'],'fuf')
+            inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],'unfuf')
+            fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],'pending')
+            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+        
+    else:
+        return redirect(url_for('user_login'))
 
-#
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('/'))
-#     return render_template('register.html', title='Register', form=form)
-#
-#
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-#             flash('You have been logged in!', 'success')
-#             return redirect(url_for('home'))
-#         else:
-#             flash('Login Unsuccessful. Please check username and password', 'danger')
-#     return render_template('login.html', title='Login', form=form)
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
+        UserHandler().do_register(request.json)
+        if UserHandler().do_login(username, password):
+            return jsonify(signedIn=True)
+
+
+
+
+@app.route('/HTH/login', methods=['POST', 'GET'])
+def user_login():
+    if request.method == 'GET':
+        return render_template("login.html")
+
+    if request.method == 'POST':
+        username = request.json['uusername']
+        password = request.json['upassword']
+
+        if UserHandler().do_login(username, password):
+            return jsonify(logged_in=True)
+
+        else:
+            return jsonify(logged_in=False)
+
+
+@app.route('/HTH/logout', methods=['GET'])
+def user_logout():
+    if request.method == 'GET':
+        if UserHandler().do_logout():
+            return redirect(url_for('home'))
+
+
+@app.route('/helpsomehommies', methods=['POST', 'GET'])
+def Request_feed():
+    if session['logged_in']:
+        if request.method == 'GET':
+            allreqs = RequestHandler().get_all_requests()
+            return render_template("provider.html", Requests = allreqs)
+        if request.method == 'POST':
+            req = RequestHandler().insert(request.json)
+    else:
+        return redirect(url_for('user_login'))
+
+
+
+@app.route('/requests', methods=['GET'])
+def getreqs():
+    if request.method == 'GET':
+        allreqs = RequestHandler().get_all_requests()
+        return(allreqs)
+
+
+@app.route('/user', methods=['GET', 'POST'])
+def users():
+    if request.method == 'GET':
+        return UserHandler().get_all_users()
+    if request.method == 'POST':
+        return UserHandler().insert_user(request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+
+@app.route('/user/<int:uid>', methods=['GET', 'DELETE'])
+def user(uid: int):
+    if request.method == 'GET':
+        return UserHandler().get_user_by_id(uid)
+    elif request.method == 'DELETE':
+        return UserHandler().delete_user_by_id(uid)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
 
 if __name__ == '__main__':
-     app.run(debug=True)
+    app.run(debug=True)
