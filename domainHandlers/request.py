@@ -103,7 +103,7 @@ class RequestHandler:
             return jsonify(Requests=results)
         except Exception as e:
             print(e)
-            return jsonify(ERROR=e), 500
+            return jsonify(ERROR="Unexpected error"), 500
 
     # def insert(self, json_input):
     #     if session['logged_in']:  # check if there are sufficient elements in input
