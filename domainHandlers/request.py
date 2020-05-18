@@ -122,10 +122,10 @@ class RequestHandler:
                 return jsonify(Error="Unexpected attributes in insert user request"), 400
             try:
                 if rid and rtitle and rdescription and rlocation and ruser and rstatus:
-                    dao = RequestDAO().insert(rtitle,rdescription,rlocation,ruser)
+                    dao = RequestDAO().insert_request(rtitle,rdescription,rlocation,rstatus,ruser)
                     return jsonify(rid = dao), 200
 
                 else:
                     return jsonify(Error="One or more attribute is empty"), 400
-            except:
+            except Exception as e:
                 return jsonify(Error="Failed to make the request."), 400

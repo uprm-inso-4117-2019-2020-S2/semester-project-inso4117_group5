@@ -79,7 +79,7 @@ def Request_feed():
             allreqs = RequestHandler().get_all_requests()
             return render_template("provider.html", Requests = allreqs)
         if request.method == 'POST':
-            req = RequestHandler().insert(request.json)
+            return RequestHandler().insert(request.json)
     else:
         return redirect(url_for('user_login'))
 
