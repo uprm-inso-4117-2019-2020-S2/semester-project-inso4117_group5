@@ -5,6 +5,7 @@ import random
 import sys
 from domainHandlers.request import RequestHandler
 from domainDAO.requestDAO import RequestDAO
+from domainDAO.userDAO import UserDAO
 sys.path.append("..")  # to work with these imports
 
 
@@ -16,10 +17,12 @@ class UserHandlerTestCase(unittest.TestCase):
         self.r3 = [3, 'Food', 'this is POSSIBLY a description', 'laCalle', 'Provided', 1]
         self.r4 = [4, 'send help pls', 'this is ME DOING a description', 'home', 'Requesting', 3]
         self.r5 = [5, 'beer', 'this is JUST a description', 'bar', 'Requesting', 4]
-
+        self.requests: list = [self.r1, self.r2, self.r3, self.r4, self.r5]
+        self.user1 = [1, 'Morsa', 'faces4444', 'morsa@gmail.com', '7878598899']
         self.keys = ['rid', 'rtitle', 'rdescription', 'rlocation', 'rstatus', 'ruser']
         self.rh = RequestHandler()
         self.dao = RequestDAO()
+        self.daoUSER = UserDAO()
         self.app = Flask(__name__)
 
     def test_create_request_dict(self):
@@ -34,96 +37,77 @@ class UserHandlerTestCase(unittest.TestCase):
             self.assertTrue(len(self.rh.get_all_requests()[0].json["Requests"]) > 1)
 
     def test_get_request_by_uid(self):
-        try:
-            pass
-        except Exception as e:
-            print(e)
-            print("Insertion Failed")
-        else:
-            pass
-        finally:
-            pass
-        pass
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                request = self.rh.get_request_by_uid(uid)[0].json["Requests"]
+                r[0] = rid
+                self.assertIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
 
-    # def test_validUser(self):
-    #     self.assertTrue(self.uh.validateUser(self.user1))
-    #     self.assertFalse(self.uh.validateUser(self.user2))
-    #     self.assertTrue(self.uh.validateUser(self.user3))
-    #     self.assertFalse(self.uh.validateUser(self.user4))
-    #     self.assertFalse(self.uh.validateUser(self.user5))
-    #     self.assertFalse(self.uh.validateUser(self.user6))
-    #     self.assertFalse(self.uh.validateUser(self.user7))
-    #
-    # def test_validUserJSON(self):
-    #     user1JSON = self.uh.createUserDict(self.user1)
-    #     user2JSON = self.uh.createUserDict(self.user2)
-    #     user3JSON = self.uh.createUserDict(self.user3)
-    #     user4JSON = self.uh.createUserDict(self.user4)
-    #     user5JSON = self.uh.createUserDict(self.user5)
-    #     user6JSON = self.uh.createUserDict(self.user6)
-    #     user7JSON = self.uh.createUserDict(self.user7)
-    #
-    #     self.assertTrue(self.uh.validateUserJSON(user1JSON))
-    #     self.assertFalse(self.uh.validateUserJSON(user2JSON))
-    #     self.assertTrue(self.uh.validateUserJSON(user3JSON))
-    #     self.assertFalse(self.uh.validateUserJSON(user4JSON))
-    #     self.assertFalse(self.uh.validateUserJSON(user5JSON))
-    #     self.assertFalse(self.uh.validateUserJSON(user6JSON))
-    #     self.assertFalse(self.uh.validateUserJSON(user7JSON))
-    #
-    # def test_get_all_users(self):
-    #     # will get a list of users
-    #     result = json.loads(self.uh.get_all_users())
-    #     self.assertTrue(len(result['results']) > 1)
-    #
-    # def test_get_user_by_id(self):
-    #     result = json.loads(self.uh.get_all_users())
-    #     first_user = result['results'][0]
-    #     user_result = json.loads(self.uh.get_user_by_id(first_user['uid']))['User']
-    #     self.assertEqual(user_result, first_user)
-    #     a_tuple = jsonify(ERROR="User Not Found"), 404
-    #     self.assertEqual(self.uh.get_user_by_id(-1), a_tuple)
-    #
-    # def test_insert_user(self):
-    #     result = self.uh.insert_user(self.new_user)
-    #     uid = json.loads(result)['User']['uid']
-    #     self.assertEqual(result[1], 201)
-    #     self.dao.delete_user_by_id(uid)  # so test user is not persisted
-    #
-    #     self.new_user.pop('uusername')
-    #     result2 = self.uh.insert_user(self.new_user)
-    #     self.assertEqual(result2[1], 400)  # user should never enter db
-    #
-    # def test_do_logout(self):
-    #     self.assertTrue(self.uh.do_logout())
-    #     self.assertFalse(session['logged_in'])
-    #
-    # def test_do_register(self):
-    #     # similar to the insert_user method
-    #     result = self.uh.do_register(self.new_user)
-    #     uid = json.loads(result)['User']['uid']
-    #     self.assertEqual(result[1], 201)
-    #     self.dao.delete_user_by_id(uid)  # so test user is not persisted
-    #
-    #     self.new_user.pop('uusername')
-    #     result2 = self.uh.do_register(self.new_user)
-    #     self.assertEqual(result2[1], 400)  # user should never enter db
-    #
-    # def test_do_login(self):
-    #     # create new user
-    #     result = self.uh.do_register(self.new_user)
-    #     uid = json.loads(result)['User']['uid']
-    #
-    #     # test right password
-    #     self.assertTrue(self.uh.do_login(self.new_user['uusername'], self.new_user['upassword']))
-    #     self.assertTrue(session['logged_in'])
-    #
-    #     # test wrong password
-    #     self.uh.do_logout()
-    #     self.assertFalse(self.uh.do_login(self.new_user['uusername'], "notThePassword"))
-    #
-    #     # delete test user
-    #     self.dao.delete_user_by_id(uid)  # so test user is not persisted
+    def test_get_requests_by_user_status(self):
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                request = self.rh.get_requests_by_user_status(rid=r[5], status=r[4])[0].json["Requests"]
+                r[0] = rid
+                self.assertIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
+
+    def test_insert_request(self):
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                request = self.rh.get_all_requests()[0].json["Requests"]
+                r[0] = rid
+                self.assertIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
+
+    def test_delete_request_by_id(self):
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                r[0] = rid
+                self.rh.delete_request_by_id(r[0])
+                request = self.rh.get_all_requests()[0].json["Requests"]
+                self.assertNotIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
+
+    def test_get_request_by_location(self):
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                request = self.rh.get_request_by_location(r[3])[0].json["Requests"]
+                r[0] = rid
+                self.assertIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
+
+    def test_get_request_by_status(self):
+        with self.app.app_context():
+            uid = self.daoUSER.insert_user(self.user1[1], self.user1[2], self.user1[3], self.user1[4])
+            for r in self.requests:
+                r[5] = uid
+                rid = self.dao.insert_request(r[1], r[2], r[3], r[4], r[5])
+                request = self.rh.get_request_by_status(r[4])[0].json["Requests"]
+                r[0] = rid
+                self.assertIn(dict(zip(self.keys, r)), request)
+            print("DELETED", self.daoUSER.delete_user_by_id(uid))
+
+    # def test_update_request_by_id(self):
+    #     with self.app.app_context():
+    #         self.dao.update_request_by_id(rid=3, rtitle=self.r1[1], rdescription=self.r1[2], rlocation=self.r1[3],
+    #                                       rstatus=self.r1[4], ruser=6)
+    #         pass
 
 
 if __name__ == "__main__":

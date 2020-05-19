@@ -67,7 +67,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(Requests=results)
+            return jsonify(Requests=results), 200
         except Exception as e:
             print(e)
             return jsonify(ERROR=e), 500
@@ -78,7 +78,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(Requests=results)
+            return jsonify(Requests=results), 200
         except Exception as e:
             print(e)
             return jsonify(ERROR=e), 500
@@ -89,7 +89,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(Requests=results)
+            return jsonify(Requests=results), 200
         except Exception as e:
             print(e)
             return jsonify(ERROR=e), 500
@@ -100,7 +100,7 @@ class RequestHandler:
             results = list()
             for row in requests:
                 results.append(self.create_request_dict(row))
-            return jsonify(Requests=results)
+            return jsonify(Requests=results), 200
         except Exception as e:
             print(e)
             return jsonify(ERROR="Unexpected error"), 500
@@ -163,3 +163,6 @@ class RequestHandler:
         except Exception as e:
             print(e)
             return jsonify(ERROR=e), 500
+
+    def update_request_by_id(self, rid: int):
+        pass

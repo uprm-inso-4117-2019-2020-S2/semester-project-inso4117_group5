@@ -1,0 +1,36 @@
+<!--  AUTHOR: HECTOR JIMENEZ MERCADO -->
+
+<html>
+  <head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type ="text/css" rel="stylesheet" id="bootstrap-css">
+      <link rel="stylesheet" href="{{ url_for('static', filename='profilePage.css') }}">
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" async></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" async></script>
+    <script src="../static/profilePage.js" type="text/javascript" async></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='profilePage.js') }}">
+  </head>
+
+  <body onload="load()">
+    <div class="header">
+      <a href="helpsomehommies" style="color: black;"><h1 id="app-name">Help The Homies</h1></a>
+      <a href="#"><h1 id="header-register">@</h1></a>
+    </div>
+
+    <div class="container fadeIn" id="pending-requests-container">
+        <h3 class="request-text-header">Pending Requests</h3>
+
+        <ul id="pending-ticket-container">
+        </ul>
+
+    </div>
+
+    <div class="container fadeIn" id="accepted-requests-container">
+        <h3 class="request-text-header">Accepted Requests</h3>
+
+        <ul id="accepted-ticket-container">
+        </ul>
+    </div>
+
+  </body>
+</html>
