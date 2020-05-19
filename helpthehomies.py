@@ -32,13 +32,13 @@ def profile():
             unf_req = RequestHandler().get_requests_by_user_status(session['uid'],'fuf')
             inprog_req = RequestHandler().get_requests_by_user_status(session['uid'],'unfuf')
             fufld_req = RequestHandler().get_requests_by_user_status(session['uid'],'pending')
-            return render_template("userProfile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
+            return render_template("profile.html", Info = user_info, Unf = unf_req , Inp = inprog_req , Fuf = fufld_req)
 
     else:
         return redirect(url_for('user_login'))
 
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/HTH/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template("register.html")
@@ -75,12 +75,12 @@ def user_logout():
             return redirect(url_for('home'))
 
 
-@app.route('/helpsomehommies', methods=['POST', 'GET'])
+@app.route('/HTH/helpsomehommies', methods=['POST', 'GET'])
 def Request_feed():
     if session['logged_in']:
         if request.method == 'GET':
             allreqs = RequestHandler().get_all_requests()
-            return render_template("provider.html", Requests = allreqs)
+            return render_template("feed.html", Requests = allreqs)
         if request.method == 'POST':
             return RequestHandler().insert_request(request.json)
     else:
