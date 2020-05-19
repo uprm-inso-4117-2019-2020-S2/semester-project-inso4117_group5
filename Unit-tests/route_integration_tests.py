@@ -58,11 +58,11 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_register_page_get(self):
-        response = self.app.get('/register')
+        response = self.app.get('/HTH/register')
         self.assertEqual(response.status_code, 200)
 
     def test_register_page_post(self):
-        response = self.app.post('/register', json=self.new_user)
+        response = self.app.post('/HTH/register', json=self.new_user)
         self.assertTrue("signedIn" in response.json)
 
     def test_login_page_get(self):
@@ -70,7 +70,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_login_page_post(self):
-        self.app.post('/register', json=self.new_user)#also logs u in
+        self.app.post('/HTH/register', json=self.new_user)#also logs u in
 
         response = self.app.post('/HTH/login', json={"uusername": self.new_user['uusername'],
         "upassword": self.new_user['upassword']})
@@ -85,7 +85,7 @@ class BasicTests(unittest.TestCase):
 
         response = self.app.get('/HTH/profile')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_logout(self):
         self.app.post('/register', json=self.new_user)#this also logs u in
@@ -95,18 +95,18 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_helphommies_nonlogin(self):
-        response = self.app.get('/helpsomehommies')
+        response = self.app.get('/HTH/helpsomehommies')
         self.assertEqual(response.status_code, 302)
 
     def test_helphommies_loggedin(self):
-        self.app.post('/register', json=self.new_user)#this also logs u in
+        self.app.post('/HTH/register', json=self.new_user)#this also logs u in
 
         #GET
-        response = self.app.get('/helpsomehommies')
+        response = self.app.get('/HTH/helpsomehommies')
         self.assertEqual(response.status_code, 200)
 
         #POST
-        response = self.app.post('/helpsomehommies', json=self.new_user)
+        response = self.app.post('/HTH/helpsomehommies', json=self.new_user)
         self.assertEquals(response.status_code, 400)
 
         #lets get that uid *sigh*
@@ -123,7 +123,7 @@ class BasicTests(unittest.TestCase):
         "ruser": uid,
         "rstatus":"fulfilled"}
 
-        response= self.app.post('/helpsomehommies', json=options)
+        response= self.app.post('/HTH/helpsomehommies', json=options)
         self.assertEquals(response.status_code, 201)
 
     def test_requests(self):

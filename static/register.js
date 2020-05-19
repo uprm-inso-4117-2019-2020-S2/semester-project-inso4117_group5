@@ -19,7 +19,7 @@ loginButton.addEventListener("click", (e) => {
     console.log(reqObj)
 
     $.ajax({
-      url: '/register',
+      url: 'register',
       type: 'POST',
       data: JSON.stringify(reqObj),
       contentType: 'application/json; charset=utf-8',
