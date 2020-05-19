@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
-class ChromeSelection(unittest.TestCase):
+class ChromeLogin(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -36,7 +36,7 @@ class ChromeSelection(unittest.TestCase):
         self.assertFalse(self.driverC.find_element_by_id('posts-tab').is_displayed())
 
     @classmethod
-    def tearDownClass(cls) :
+    def tearDownClass(cls):
         cls.driverC.close()
         cls.driverC.quit()
         print('login test completed')
